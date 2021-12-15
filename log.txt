@@ -1,0 +1,2 @@
+PANIC: PANIC: p-allocator.c: TEST PASS
+PANIC: PANIC: p-test.c: TEST PASS

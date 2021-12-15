@@ -1,0 +1,14 @@
+make test-brk-simple run-console
+make test-brk-write run-console
+make test-calloc run-console
+make test-defrag run-console
+make test-freespace run-console
+make test-heapinfo run-console
+make test-malloc-alignment run-console
+make test-malloc-simple run-console
+make test-public-allocator run-console
+make test-public-alloctests run-console
+make test-public-malloc run-console
+make test-realloc run-console
+make test-sbrk-simple run-console
+make test-sbrk-simple run-console
