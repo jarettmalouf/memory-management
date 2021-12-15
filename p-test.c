@@ -19,40 +19,15 @@ void process_main(void) {
     heap_bottom = heap_top = ROUNDUP((uint8_t*) end, PAGESIZE);
     stack_bottom = ROUNDDOWN((uint8_t*) read_rsp() - 1, PAGESIZE);
 
-    void *ptr = malloc(25);
-    assert(ptr != NULL);
+    /* Single elements on heap of varying sizes */
+    for(int i = 1; i < 512; ++i) {
+        void *ptr = malloc(i);
+        assert(ptr != NULL);
 
-    memset(ptr, 'A', 25);
-
-    ptr = realloc(ptr, 25000);
-    assert(ptr != NULL);
-
-    /* check that memory was copied */
-    for(size_t i = 0; i < 25; ++i) {
-        assert(((char *)ptr)[i] == 'A');
+        /* Check that we can write */
+        memset(ptr, 'A', i);
+        free(ptr);
     }
-    memset(ptr, 'A', 25000);
-
-
-    void *ptr2 = malloc(1024);
-    memset(ptr2, 'B', 1024);
-
-    for(size_t i = 512; i > 0; --i) {
-        ptr2 = realloc(ptr2, i);
-	for(size_t j = 0; j < i; ++j) {
-            assert(((char *)ptr2)[j] == 'B');
-        }
-    }
-
-    ptr2 = realloc(ptr2, 0);
-    ptr2 = realloc(NULL, 0);
-
-    /* confirm no tampering */
-    for(size_t i = 0; i < 25000; ++i) {
-        assert(((char *)ptr)[i] == 'A');
-    }
-
-    free(ptr);
 
     TEST_PASS();
 }

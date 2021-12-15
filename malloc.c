@@ -4,7 +4,7 @@
 #define ALLOC_HEADER_SIZE sizeof(struct alloc_header)
 #define FREE_LIST_NODE_SIZE sizeof(struct free_list_node)
 
-// _quicksort
+// __quicksort
 typedef struct ptr_with_size{
     void * ptr;
     size_t size;
@@ -34,7 +34,7 @@ typedef struct
 #define        STACK_NOT_EMPTY        (stack < top)
 typedef int (*__compar_fn_t) (const void *, const void *);
 void
-_quicksort (void *const pbase, size_t total_elems, size_t size,
+__quicksort (void *const pbase, size_t total_elems, size_t size,
             __compar_fn_t cmp)
 {
     char *base_ptr = (char *) pbase;
@@ -170,7 +170,7 @@ jump_over:;
 	}
     }
 }
-int ptr_comparator( const void * a, const void * b){
+int ptr_comparator_ptr_ascending( const void * a, const void * b){
     return (uintptr_t)((ptr_with_size *) a)->ptr - (uintptr_t)((ptr_with_size *) b)->ptr;
 }
 int ptr_comparator_size_descending( const void * a, const void * b){
@@ -241,12 +241,11 @@ void remove_alloc_list_node(alloc_header *header) {
 
 struct free_list_node *get_free_block(uint64_t payload_sz) {
     free_list_node *ptr = free_list_head;
-    free_list_node *insertion_block = NULL;
-    while (ptr != NULL && insertion_block == NULL) {
-        if (ptr->sz >= ALLOC_HEADER_SIZE + payload_sz) insertion_block = ptr;
+    while (ptr != NULL) {
+        if (ptr->sz >= ALLOC_HEADER_SIZE + payload_sz) return ptr;
         ptr = ptr->next;
     }
-    return insertion_block;
+    return NULL;
 }
 
 
@@ -263,13 +262,16 @@ struct free_list_node *extend_heap(size_t sz) {
 // returns address of the block (alloc_header) if allocated properly
 // NULL if there was no space
 uintptr_t allocate_to_free_block(uint64_t sz) {
+    // find a free block
     free_list_node *free_block = get_free_block(sz);
     if (free_block == NULL) return (uintptr_t) -1;
 
+    // remove that free block
     uintptr_t block_addr = (uintptr_t) free_block;
     size_t block_size = free_block->sz;
     remove_free_list_node(free_block);
 
+    // replace it with an alloc_header
     struct alloc_header *header = (struct alloc_header *) block_addr;
     size_t payload_size = ROUNDUP(sz, ALIGNMENT);
     size_t min_payload_size = FREE_LIST_NODE_SIZE - ALLOC_HEADER_SIZE;
@@ -277,6 +279,7 @@ uintptr_t allocate_to_free_block(uint64_t sz) {
     header->sz = payload_size;
     append_alloc_list_node(header);
 
+    // leftover stuff
     size_t data_size = ALLOC_HEADER_SIZE + payload_size;
     size_t leftover = block_size - data_size;
 
@@ -348,19 +351,6 @@ void *realloc(void * ptr, uint64_t sz) {
     size_t original_sz = original_header->sz;
     if (original_sz == sz) return ptr;
 
-    // size_t min_payload_size = FREE_LIST_NODE_SIZE - ALLOC_HEADER_SIZE;
-    // size_t new_block_size = ROUNDUP(sz, ALIGNMENT);
-
-    // if (original_sz >= new_block_size + FREE_LIST_NODE_SIZE && new_block_size >= min_payload_size) {
-    //     original_header->sz = new_block_size;
-
-    //     struct free_list_node *node = (struct free_list_node *) ((uintptr_t) ptr + new_block_size);
-    //     node->sz = original_sz - new_block_size;
-    //     append_free_list_node(node);
-
-    //     return ptr;
-    // }
-
     void *malloc_addr = malloc(sz);
     if (malloc_addr == NULL) return NULL;
     struct alloc_header *header = (struct alloc_header *) ((uintptr_t) malloc_addr - ALLOC_HEADER_SIZE);
@@ -409,7 +399,7 @@ void defrag() {
         ptrs_with_size[i].ptr = curr;
         ptrs_with_size[i].size = curr->sz;
     }
-    _quicksort(ptrs_with_size, free_list_length, sizeof(ptrs_with_size[0]), &ptr_comparator);
+    __quicksort(ptrs_with_size, free_list_length, sizeof(ptrs_with_size[0]), &ptr_comparator_ptr_ascending);
 
     int i = 0, j = 1;
     for (; j < free_list_length; j++) {
@@ -433,14 +423,41 @@ int heap_info(heap_info_struct * info) {
     // alloc_list_length
     info->num_allocs = alloc_list_length;
 
-    // size array
-      ptr_with_size ptrs_with_size[alloc_list_length];
-    alloc_header *curr = alloc_list_head;
-    for (int i = 0; i < alloc_list_length; i++, curr = curr->next) {
-        ptrs_with_size[i].ptr = (void *) ((uintptr_t) curr + ALLOC_HEADER_SIZE);
-        ptrs_with_size[i].size = curr->sz;
+    // size+ptr arrays
+    if (alloc_list_length == 0) {
+        info->size_array = NULL;
+        info->ptr_array = NULL;
+    } else {
+        ptr_with_size ptrs_with_size[alloc_list_length];
+        alloc_header *curr = alloc_list_head;
+        for (int i = 0; i < alloc_list_length; i++, curr = curr->next) {
+            ptrs_with_size[i].ptr = (void *) ((uintptr_t) curr + ALLOC_HEADER_SIZE);
+            ptrs_with_size[i].size = curr->sz;
+        }
+        __quicksort(ptrs_with_size, alloc_list_length, sizeof(ptrs_with_size[0]), &ptr_comparator_size_descending);
+
+        long *size_array = (long *) malloc(sizeof(long) * alloc_list_length);
+        uintptr_t *ptr_array = (uintptr_t *) malloc(sizeof(uintptr_t) * alloc_list_length);
+        if (size_array == NULL || ptr_array == NULL) return -1;
+        for (int i = 0; i < alloc_list_length; i++) {
+            size_array[i] = ptrs_with_size[i].size;
+            ptr_array[i] = (uintptr_t) ptrs_with_size[i].ptr;
+        }
+
+        info->size_array = size_array;
+        info->ptr_array = (void **) ptr_array;
     }
-    _quicksort(ptrs_with_size, alloc_list_length, sizeof(ptrs_with_size[0]), &ptr_comparator_size_descending);
+   
+    // free space
+    size_t free_space = 0;
+    size_t largest_free_chunk = 0;
+    free_list_node *curr_ = free_list_head;
+    for (int i = 0; i < free_list_length; i++, curr_ = curr_->next) {
+        largest_free_chunk = MAX(largest_free_chunk, curr_->sz);
+        free_space += curr_->sz;
+    }
+    info->free_space = (int) free_space;
+    info->largest_free_chunk = (int) largest_free_chunk;
     
     return 0;
 }
