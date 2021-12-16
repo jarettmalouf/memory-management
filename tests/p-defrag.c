@@ -18,9 +18,9 @@ void process_main(void) {
 
     heap_info_struct h1, h2, h3;
 
-    void* ptr = malloc(16384);
     void * ptr2 = malloc(10);
-    void * ptr3 = malloc(10);
+    void* ptr = malloc(16384);
+    void * ptr3 = malloc(20);
 
     heap_info(&h1);
 
@@ -39,6 +39,7 @@ void process_main(void) {
     defrag();
     heap_info(&h3);
 
+    app_printf(1, "h3: %x , h2: %x", h3.largest_free_chunk, h2.largest_free_chunk);
     assert(h3.largest_free_chunk > h2.largest_free_chunk);
 
     app_printf(0, "DEFRAG PASS\n");

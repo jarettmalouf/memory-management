@@ -172,19 +172,18 @@ jump_over:;
     }
 }
 
-int cmp_ptr_ascending( const void * a, const void * b){
+int cmp_ptr_ascending(const void *a, const void *b){
     return (uintptr_t)((ptr_with_size *) a)->ptr - (uintptr_t)((ptr_with_size *) b)->ptr;
 }
-int cmp_size_descending( const void * a, const void * b){
-    return (size_t)((ptr_with_size *) b)->size - (size_t)((ptr_with_size *) a)->size;
+int cmp_simple_descending(const void *a, const void *b) {
+    return *((long *) b) - *((long *) a);
 }
-void print_ptrs_with_size(ptr_with_size *ptrs_with_size, int end) {
-    mem_tog(0);
-    app_printf(1, "Start");
-    for (int i = 0; i < end; i++) {
-        app_printf(1, " %x-%x ", ptrs_with_size[i].ptr, ptrs_with_size[i].size);
-    }
-    app_printf(1, "End");
+int cmp_ptrs_by_size_descending(const void *a, const void *b) {
+    void *ptr_a = *((void **) a);
+    void *ptr_b = *((void **) b);
+    alloc_header *header_a = (alloc_header *) ((uintptr_t) ptr_a - ALLOC_HEADER_SIZE);
+    alloc_header *header_b = (alloc_header *) ((uintptr_t) ptr_b - ALLOC_HEADER_SIZE);
+    return header_b->sz - header_a->sz;
 }
 //
 
@@ -195,6 +194,8 @@ int free_list_length = 0;
 alloc_header *alloc_list_head = NULL;
 alloc_header *alloc_list_tail = NULL;
 int alloc_list_length = 0;
+
+int break_made = 0;
 
 void append_free_list_node(free_list_node *node) {
     node->next = NULL;
@@ -260,6 +261,14 @@ struct free_list_node *extend_heap(size_t sz) {
     return node;
 }
 
+void contract_heap(size_t sz) {
+    size_t heap_contraction = -ROUNDUP(sz, BREAK_INCREMENT);
+    void *start = sbrk(heap_contraction);
+    if (start == (void *) -1) return;
+    struct free_list_node *node = (struct free_list_node *) start;
+    remove_free_list_node(node);
+}
+
 // returns address of the block (alloc_header) if allocated properly
 // NULL if there was no space
 uintptr_t allocate_to_free_block(uint64_t sz) {
@@ -278,7 +287,6 @@ uintptr_t allocate_to_free_block(uint64_t sz) {
     size_t min_payload_size = FREE_LIST_NODE_SIZE - ALLOC_HEADER_SIZE;
     if (payload_size < min_payload_size) payload_size = min_payload_size;
     header->sz = payload_size;
-    append_alloc_list_node(header);
 
     // leftover stuff
     size_t data_size = ALLOC_HEADER_SIZE + payload_size;
@@ -290,6 +298,7 @@ uintptr_t allocate_to_free_block(uint64_t sz) {
         append_free_list_node(node);
     } else header->sz += leftover;
 
+    append_alloc_list_node(header);
     return block_addr;
 }
  
@@ -304,6 +313,7 @@ void *malloc(uint64_t sz) {
     uintptr_t block_addr = allocate_to_free_block(sz);
     while (block_addr == (uintptr_t) -1) {
         if (extend_heap(sz) == NULL) return NULL;
+        break_made = 1;
         block_addr = allocate_to_free_block(sz);
     }
 
@@ -400,6 +410,7 @@ void defrag() {
         ptrs_with_size[i].ptr = curr;
         ptrs_with_size[i].size = curr->sz;
     }
+
     __quicksort(ptrs_with_size, free_list_length, sizeof(ptrs_with_size[0]), &cmp_ptr_ascending);
 
     int i = 0, length = free_list_length;
@@ -409,15 +420,6 @@ void defrag() {
     }
 }
 
-// heap_info(info)
-// set the appropriate values in the heap_info_struct passed
-// the malloc library will be responsible for alloc'ing size_array and 
-// ptr_array
-// the user, i.e. the process will be responsible for freeing these allocations
-// note that the allocations used by the heap_info_struct will count as metadata
-// and should NOT be included in the heap info
-// return 0 for a successfull call
-// if for any reason the information cannot be saved, return -1
 int heap_info(heap_info_struct * info) {
     int init_alloc_list_length = alloc_list_length;
     
@@ -436,27 +438,21 @@ int heap_info(heap_info_struct * info) {
         info->size_array = NULL;
         info->ptr_array = NULL;
     } else {
-        ptr_with_size *ptrs_with_size = (ptr_with_size *) malloc(sizeof(ptr_with_size) * init_alloc_list_length);
-        alloc_header *curr = alloc_list_head;
-        for (int i = 0; i < init_alloc_list_length; i++, curr = curr->next) {
-            ptrs_with_size[i].ptr = (void *) ((uintptr_t) curr + ALLOC_HEADER_SIZE);
-            ptrs_with_size[i].size = curr->sz;
-        }
-        __quicksort(ptrs_with_size, init_alloc_list_length, sizeof(ptrs_with_size[0]), &cmp_size_descending);
-
-        long *size_array = (long *) malloc(sizeof(long) * init_alloc_list_length);
-        void **ptr_array = (void **) malloc(sizeof(void *) * init_alloc_list_length);
+        long *size_array = (long *) malloc (sizeof(long) * init_alloc_list_length);
+        void **ptr_array = (void **) malloc (sizeof(void *) * init_alloc_list_length);
         if (size_array == NULL || ptr_array == NULL) { free(size_array); free(ptr_array); return -1; }
 
-        for (int i = 0; i < init_alloc_list_length; i++) {
-            size_array[i] = ptrs_with_size[i].size;
-            ptr_array[i] = ptrs_with_size[i].ptr;
+        alloc_header *curr = alloc_list_head;
+        for (int i = 0; i < init_alloc_list_length; i++, curr = curr->next) {
+            size_array[i] = (long) curr->sz;
+            ptr_array[i] = (void *) ((uintptr_t) curr + ALLOC_HEADER_SIZE);
         }
+
+        __quicksort(size_array, init_alloc_list_length, sizeof(size_array[0]), &cmp_simple_descending);
+        __quicksort(ptr_array, init_alloc_list_length, sizeof(size_array[0]), &cmp_ptrs_by_size_descending);
 
         info->size_array = size_array;
         info->ptr_array = ptr_array;
-
-        free(ptrs_with_size);
     }
 
     info->num_allocs = init_alloc_list_length;
@@ -465,3 +461,4 @@ int heap_info(heap_info_struct * info) {
 
     return 0;
 }
+
