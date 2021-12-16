@@ -239,6 +239,7 @@ void process_main(void) {
 
     _quicksort(ptr, ptr_size, sizeof(ptr[0]), &ptr_comparator);
 
+//
     heap_info_struct h;
     register uint64_t time1 = rdtsc(); 
     int ret = heap_info(&h);
@@ -256,6 +257,7 @@ void process_main(void) {
         int r = exists_in_between(ptr, h.ptr_array[i], h.size_array[i], ptr_size);
         assert(r);
     }
+		
 
     app_printf(0, "HEAP INFO PASS\n");
     TEST_PASS();

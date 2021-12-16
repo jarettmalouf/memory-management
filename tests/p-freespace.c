@@ -38,7 +38,6 @@ void process_main(void) {
     assert(h1.ptr_array != NULL);
     assert(h2.ptr_array != NULL);
 
-
     assert(h3.free_space > h2.free_space);
     assert(h3.largest_free_chunk >= 16384);
 

@@ -5,10 +5,6 @@
 #define FREE_LIST_NODE_SIZE sizeof(struct free_list_node)
 
 // __quicksort
-typedef struct ptr_with_size{
-    void * ptr;
-    size_t size;
-} ptr_with_size;
 #define SWAP(a, b, size)                                                      \
   do                                                                              \
     {                                                                              \
@@ -22,19 +18,24 @@ typedef struct ptr_with_size{
         } while (--__size > 0);                                                      \
     } while (0)
 #define MAX_THRESH 4
+#define CHAR_BIT 8
+#define STACK_SIZE (CHAR_BIT * sizeof (size_t))
+#define PUSH(low, high) ((void) ((top->lo = (low)), (top->hi = (high)), ++top))
+#define POP(low, high) ((void) (--top, (low = top->lo), (high = top->hi)))
+#define STACK_NOT_EMPTY (stack < top)
+
 typedef struct
   {
     char *lo;
     char *hi;
   } stack_node;
-#  define CHAR_BIT        8
-#define STACK_SIZE        (CHAR_BIT * sizeof (size_t))
-#define PUSH(low, high)        ((void) ((top->lo = (low)), (top->hi = (high)), ++top))
-#define        POP(low, high)        ((void) (--top, (low = top->lo), (high = top->hi)))
-#define        STACK_NOT_EMPTY        (stack < top)
+typedef struct ptr_with_size{
+    void * ptr;
+    long size;
+} ptr_with_size;
 typedef int (*__compar_fn_t) (const void *, const void *);
-void
-__quicksort (void *const pbase, size_t total_elems, size_t size,
+
+void __quicksort (void *const pbase, size_t total_elems, size_t size,
             __compar_fn_t cmp)
 {
     char *base_ptr = (char *) pbase;
@@ -170,10 +171,11 @@ jump_over:;
 	}
     }
 }
-int ptr_comparator_ptr_ascending( const void * a, const void * b){
+
+int cmp_ptr_ascending( const void * a, const void * b){
     return (uintptr_t)((ptr_with_size *) a)->ptr - (uintptr_t)((ptr_with_size *) b)->ptr;
 }
-int ptr_comparator_size_descending( const void * a, const void * b){
+int cmp_size_descending( const void * a, const void * b){
     return (size_t)((ptr_with_size *) b)->size - (size_t)((ptr_with_size *) a)->size;
 }
 void print_ptrs_with_size(ptr_with_size *ptrs_with_size, int end) {
@@ -185,7 +187,6 @@ void print_ptrs_with_size(ptr_with_size *ptrs_with_size, int end) {
     app_printf(1, "End");
 }
 //
-
 
 free_list_node *free_list_head = NULL;
 free_list_node *free_list_tail = NULL;
@@ -399,10 +400,10 @@ void defrag() {
         ptrs_with_size[i].ptr = curr;
         ptrs_with_size[i].size = curr->sz;
     }
-    __quicksort(ptrs_with_size, free_list_length, sizeof(ptrs_with_size[0]), &ptr_comparator_ptr_ascending);
+    __quicksort(ptrs_with_size, free_list_length, sizeof(ptrs_with_size[0]), &cmp_ptr_ascending);
 
-    int i = 0, j = 1;
-    for (; j < free_list_length; j++) {
+    int i = 0, length = free_list_length;
+    for (int j = 1; j < length; j++) {
         if (adjacent(ptrs_with_size, i, j)) coalesce(ptrs_with_size, i, j);
         else i = j;
     }
@@ -417,47 +418,50 @@ void defrag() {
 // and should NOT be included in the heap info
 // return 0 for a successfull call
 // if for any reason the information cannot be saved, return -1
-
-
 int heap_info(heap_info_struct * info) {
-    // alloc_list_length
-    info->num_allocs = alloc_list_length;
+    int init_alloc_list_length = alloc_list_length;
+    
+    // free space + largest free chunk
+    int largest_free_chunk = 0;
+    int free_space = 0;
+    free_list_node *curr_ = free_list_head;
+    for (int i = 0; i < free_list_length; i++, curr_ = curr_->next) {
+        int sz = (int) curr_->sz;
+        largest_free_chunk = MAX(largest_free_chunk, sz);
+        free_space += sz;
+    }
 
-    // size+ptr arrays
-    if (alloc_list_length == 0) {
+    // size + ptr arrays
+    if (init_alloc_list_length == 0) {
         info->size_array = NULL;
         info->ptr_array = NULL;
     } else {
-        ptr_with_size ptrs_with_size[alloc_list_length];
+        ptr_with_size *ptrs_with_size = (ptr_with_size *) malloc(sizeof(ptr_with_size) * init_alloc_list_length);
         alloc_header *curr = alloc_list_head;
-        for (int i = 0; i < alloc_list_length; i++, curr = curr->next) {
+        for (int i = 0; i < init_alloc_list_length; i++, curr = curr->next) {
             ptrs_with_size[i].ptr = (void *) ((uintptr_t) curr + ALLOC_HEADER_SIZE);
             ptrs_with_size[i].size = curr->sz;
         }
-        __quicksort(ptrs_with_size, alloc_list_length, sizeof(ptrs_with_size[0]), &ptr_comparator_size_descending);
+        __quicksort(ptrs_with_size, init_alloc_list_length, sizeof(ptrs_with_size[0]), &cmp_size_descending);
 
-        long *size_array = (long *) malloc(sizeof(long) * alloc_list_length);
-        uintptr_t *ptr_array = (uintptr_t *) malloc(sizeof(uintptr_t) * alloc_list_length);
-        if (size_array == NULL || ptr_array == NULL) return -1;
-        for (int i = 0; i < alloc_list_length; i++) {
+        long *size_array = (long *) malloc(sizeof(long) * init_alloc_list_length);
+        void **ptr_array = (void **) malloc(sizeof(void *) * init_alloc_list_length);
+        if (size_array == NULL || ptr_array == NULL) { free(size_array); free(ptr_array); return -1; }
+
+        for (int i = 0; i < init_alloc_list_length; i++) {
             size_array[i] = ptrs_with_size[i].size;
-            ptr_array[i] = (uintptr_t) ptrs_with_size[i].ptr;
+            ptr_array[i] = ptrs_with_size[i].ptr;
         }
 
         info->size_array = size_array;
-        info->ptr_array = (void **) ptr_array;
+        info->ptr_array = ptr_array;
+
+        free(ptrs_with_size);
     }
-   
-    // free space
-    size_t free_space = 0;
-    size_t largest_free_chunk = 0;
-    free_list_node *curr_ = free_list_head;
-    for (int i = 0; i < free_list_length; i++, curr_ = curr_->next) {
-        largest_free_chunk = MAX(largest_free_chunk, curr_->sz);
-        free_space += curr_->sz;
-    }
-    info->free_space = (int) free_space;
-    info->largest_free_chunk = (int) largest_free_chunk;
-    
+
+    info->num_allocs = init_alloc_list_length;
+    info->largest_free_chunk = largest_free_chunk;
+    info->free_space = free_space;
+
     return 0;
 }
