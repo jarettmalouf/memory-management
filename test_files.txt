@@ -12,3 +12,4 @@ make test-public-malloc run-console
 make test-realloc run-console
 make test-sbrk-simple run-console
 make test-sbrk-simple run-console
+make linux-p-fibonnacci run-console
