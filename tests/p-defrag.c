@@ -39,7 +39,6 @@ void process_main(void) {
     defrag();
     heap_info(&h3);
 
-    app_printf(1, "h3: %x , h2: %x", h3.largest_free_chunk, h2.largest_free_chunk);
     assert(h3.largest_free_chunk > h2.largest_free_chunk);
 
     app_printf(0, "DEFRAG PASS\n");

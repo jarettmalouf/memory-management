@@ -52,7 +52,7 @@ static inline pid_t getpid(void) {
     // realloc array to size 20
     array = (int*)realloc(array, sizeof(int) * 20);
   2c003a:	be 50 00 00 00       	mov    $0x50,%esi
-  2c003f:	e8 55 13 00 00       	callq  2c1399 <realloc>
+  2c003f:	e8 4b 13 00 00       	callq  2c138f <realloc>
   2c0044:	49 89 c5             	mov    %rax,%r13
   2c0047:	b8 00 00 00 00       	mov    $0x0,%eax
 
@@ -71,7 +71,7 @@ static inline pid_t getpid(void) {
     int * array2 = (int *)calloc(30, sizeof(int));
   2c005d:	be 04 00 00 00       	mov    $0x4,%esi
   2c0062:	bf 1e 00 00 00       	mov    $0x1e,%edi
-  2c0067:	e8 8d 12 00 00       	callq  2c12f9 <calloc>
+  2c0067:	e8 83 12 00 00       	callq  2c12ef <calloc>
   2c006c:	49 89 c6             	mov    %rax,%r14
 
     // assert array[i] == 0
@@ -90,7 +90,7 @@ static inline pid_t getpid(void) {
     heap_info_struct info;
     if(heap_info(&info) == 0){
   2c0082:	48 8d 7d c0          	lea    -0x40(%rbp),%rdi
-  2c0086:	e8 74 14 00 00       	callq  2c14ff <heap_info>
+  2c0086:	e8 6a 14 00 00       	callq  2c14f5 <heap_info>
   2c008b:	85 c0                	test   %eax,%eax
   2c008d:	75 64                	jne    2c00f3 <process_main+0xf3>
 	// check if allocations are in sorted order
@@ -111,37 +111,37 @@ static inline pid_t getpid(void) {
   2c00b3:	75 ee                	jne    2c00a3 <process_main+0xa3>
   2c00b5:	eb 50                	jmp    2c0107 <process_main+0x107>
 	assert(array[i] == i);
-  2c00b7:	ba e0 17 2c 00       	mov    $0x2c17e0,%edx
+  2c00b7:	ba d0 17 2c 00       	mov    $0x2c17d0,%edx
   2c00bc:	be 1a 00 00 00       	mov    $0x1a,%esi
-  2c00c1:	bf ee 17 2c 00       	mov    $0x2c17ee,%edi
-  2c00c6:	e8 de 16 00 00       	callq  2c17a9 <assert_fail>
+  2c00c1:	bf de 17 2c 00       	mov    $0x2c17de,%edi
+  2c00c6:	e8 d4 16 00 00       	callq  2c179f <assert_fail>
 	assert(array2[i] == 0);
-  2c00cb:	ba fd 17 2c 00       	mov    $0x2c17fd,%edx
+  2c00cb:	ba ed 17 2c 00       	mov    $0x2c17ed,%edx
   2c00d0:	be 22 00 00 00       	mov    $0x22,%esi
-  2c00d5:	bf ee 17 2c 00       	mov    $0x2c17ee,%edi
-  2c00da:	e8 ca 16 00 00       	callq  2c17a9 <assert_fail>
+  2c00d5:	bf de 17 2c 00       	mov    $0x2c17de,%edi
+  2c00da:	e8 c0 16 00 00       	callq  2c179f <assert_fail>
 	    assert(info.size_array[i] < info.size_array[i-1]);
-  2c00df:	ba 20 18 2c 00       	mov    $0x2c1820,%edx
+  2c00df:	ba 10 18 2c 00       	mov    $0x2c1810,%edx
   2c00e4:	be 29 00 00 00       	mov    $0x29,%esi
-  2c00e9:	bf ee 17 2c 00       	mov    $0x2c17ee,%edi
-  2c00ee:	e8 b6 16 00 00       	callq  2c17a9 <assert_fail>
+  2c00e9:	bf de 17 2c 00       	mov    $0x2c17de,%edi
+  2c00ee:	e8 ac 16 00 00       	callq  2c179f <assert_fail>
 	}
     }
     else{
 	app_printf(0, "heap_info failed\n");
-  2c00f3:	be 0c 18 2c 00       	mov    $0x2c180c,%esi
+  2c00f3:	be fc 17 2c 00       	mov    $0x2c17fc,%esi
   2c00f8:	bf 00 00 00 00       	mov    $0x0,%edi
   2c00fd:	b8 00 00 00 00       	mov    $0x0,%eax
-  2c0102:	e8 44 15 00 00       	callq  2c164b <app_printf>
+  2c0102:	e8 3a 15 00 00       	callq  2c1641 <app_printf>
     }
     
     // free array, array2
     free(array);
   2c0107:	4c 89 ef             	mov    %r13,%rdi
-  2c010a:	e8 58 12 00 00       	callq  2c1367 <free>
+  2c010a:	e8 4e 12 00 00       	callq  2c135d <free>
     free(array2);
   2c010f:	4c 89 f7             	mov    %r14,%rdi
-  2c0112:	e8 50 12 00 00       	callq  2c1367 <free>
+  2c0112:	e8 46 12 00 00       	callq  2c135d <free>
 
     uint64_t total_time = 0;
   2c0117:	41 bd 00 00 00 00    	mov    $0x0,%r13d
@@ -196,10 +196,10 @@ static uint64_t rdtsc(void) {
   2c0161:	48 f7 f3             	div    %rbx
   2c0164:	48 89 c1             	mov    %rax,%rcx
   2c0167:	4c 89 ea             	mov    %r13,%rdx
-  2c016a:	be 50 18 2c 00       	mov    $0x2c1850,%esi
+  2c016a:	be 40 18 2c 00       	mov    $0x2c1840,%esi
   2c016f:	44 89 e7             	mov    %r12d,%edi
   2c0172:	b8 00 00 00 00       	mov    $0x0,%eax
-  2c0177:	e8 cf 14 00 00       	callq  2c164b <app_printf>
+  2c0177:	e8 c5 14 00 00       	callq  2c1641 <app_printf>
 
 // yield
 //    Yield control of the CPU to the kernel. The kernel will pick another
@@ -520,14 +520,14 @@ void printer_vprintf(printer* p, int color, const char* format, va_list val) {
   2c03d8:	41 bd 00 00 00 00    	mov    $0x0,%r13d
             const char* flagc = strchr(flag_chars, *format);
   2c03de:	41 0f be f4          	movsbl %r12b,%esi
-  2c03e2:	bf 81 1a 2c 00       	mov    $0x2c1a81,%edi
+  2c03e2:	bf 71 1a 2c 00       	mov    $0x2c1a71,%edi
   2c03e7:	e8 37 ff ff ff       	callq  2c0323 <strchr>
   2c03ec:	48 89 c1             	mov    %rax,%rcx
             if (flagc) {
   2c03ef:	48 85 c0             	test   %rax,%rax
   2c03f2:	74 55                	je     2c0449 <printer_vprintf+0xb3>
                 flags |= 1 << (flagc - flag_chars);
-  2c03f4:	48 81 e9 81 1a 2c 00 	sub    $0x2c1a81,%rcx
+  2c03f4:	48 81 e9 71 1a 2c 00 	sub    $0x2c1a71,%rcx
   2c03fb:	b8 01 00 00 00       	mov    $0x1,%eax
   2c0400:	d3 e0                	shl    %cl,%eax
   2c0402:	41 09 c5             	or     %eax,%r13d
@@ -552,7 +552,7 @@ void printer_vprintf(printer* p, int color, const char* format, va_list val) {
   2c0437:	3c 37                	cmp    $0x37,%al
   2c0439:	0f 87 c4 04 00 00    	ja     2c0903 <printer_vprintf+0x56d>
   2c043f:	0f b6 c0             	movzbl %al,%eax
-  2c0442:	ff 24 c5 90 18 2c 00 	jmpq   *0x2c1890(,%rax,8)
+  2c0442:	ff 24 c5 80 18 2c 00 	jmpq   *0x2c1880(,%rax,8)
         if (*format >= '1' && *format <= '9') {
   2c0449:	44 89 6d a8          	mov    %r13d,-0x58(%rbp)
   2c044d:	41 8d 44 24 cf       	lea    -0x31(%r12),%eax
@@ -691,7 +691,7 @@ void printer_vprintf(printer* p, int color, const char* format, va_list val) {
   2c05aa:	83 c8 60             	or     $0x60,%eax
   2c05ad:	89 45 a8             	mov    %eax,-0x58(%rbp)
         char* data = "";
-  2c05b0:	41 bc 1d 18 2c 00    	mov    $0x2c181d,%r12d
+  2c05b0:	41 bc 0d 18 2c 00    	mov    $0x2c180d,%r12d
             break;
   2c05b6:	e9 35 01 00 00       	jmpq   2c06f0 <printer_vprintf+0x35a>
             long x = length ? va_arg(val, long) : va_arg(val, int);
@@ -743,7 +743,7 @@ void printer_vprintf(printer* p, int color, const char* format, va_list val) {
         if (flags & FLAG_NUMERIC) {
   2c0643:	c7 45 8c 20 00 00 00 	movl   $0x20,-0x74(%rbp)
     const char* digits = upper_digits;
-  2c064a:	bf 70 1a 2c 00       	mov    $0x2c1a70,%edi
+  2c064a:	bf 60 1a 2c 00       	mov    $0x2c1a60,%edi
   2c064f:	e9 e2 02 00 00       	jmpq   2c0936 <printer_vprintf+0x5a0>
             base = 16;
   2c0654:	be 10 00 00 00       	mov    $0x10,%esi
@@ -769,7 +769,7 @@ void printer_vprintf(printer* p, int color, const char* format, va_list val) {
   2c0681:	f7 de                	neg    %esi
   2c0683:	c7 45 8c 20 00 00 00 	movl   $0x20,-0x74(%rbp)
         digits = lower_digits;
-  2c068a:	bf 50 1a 2c 00       	mov    $0x2c1a50,%edi
+  2c068a:	bf 40 1a 2c 00       	mov    $0x2c1a40,%edi
   2c068f:	e9 a2 02 00 00       	jmpq   2c0936 <printer_vprintf+0x5a0>
             num = (uintptr_t) va_arg(val, void*);
   2c0694:	48 8b 7d 90          	mov    -0x70(%rbp),%rdi
@@ -820,7 +820,7 @@ void printer_vprintf(printer* p, int color, const char* format, va_list val) {
   2c0717:	8b 45 a8             	mov    -0x58(%rbp),%eax
   2c071a:	83 e0 21             	and    $0x21,%eax
         const char* prefix = "";
-  2c071d:	48 c7 45 a0 1d 18 2c 	movq   $0x2c181d,-0x60(%rbp)
+  2c071d:	48 c7 45 a0 0d 18 2c 	movq   $0x2c180d,-0x60(%rbp)
   2c0724:	00 
         } else if ((flags & FLAG_NUMERIC) && (flags & FLAG_ALT)
   2c0725:	83 f8 21             	cmp    $0x21,%eax
@@ -1021,7 +1021,7 @@ void printer_vprintf(printer* p, int color, const char* format, va_list val) {
         if (flags & FLAG_NUMERIC) {
   2c0926:	41 b9 0a 00 00 00    	mov    $0xa,%r9d
     const char* digits = upper_digits;
-  2c092c:	bf 70 1a 2c 00       	mov    $0x2c1a70,%edi
+  2c092c:	bf 60 1a 2c 00       	mov    $0x2c1a60,%edi
         if (flags & FLAG_NUMERIC) {
   2c0931:	be 0a 00 00 00       	mov    $0xa,%esi
     *--numbuf_end = '\0';
@@ -1044,22 +1044,22 @@ void printer_vprintf(printer* p, int color, const char* format, va_list val) {
   2c0964:	76 de                	jbe    2c0944 <printer_vprintf+0x5ae>
   2c0966:	e9 9a fd ff ff       	jmpq   2c0705 <printer_vprintf+0x36f>
                 prefix = "-";
-  2c096b:	48 c7 45 a0 85 18 2c 	movq   $0x2c1885,-0x60(%rbp)
+  2c096b:	48 c7 45 a0 75 18 2c 	movq   $0x2c1875,-0x60(%rbp)
   2c0972:	00 
             if (flags & FLAG_NEGATIVE) {
   2c0973:	8b 45 a8             	mov    -0x58(%rbp),%eax
   2c0976:	a8 80                	test   $0x80,%al
   2c0978:	0f 85 b0 fd ff ff    	jne    2c072e <printer_vprintf+0x398>
                 prefix = "+";
-  2c097e:	48 c7 45 a0 80 18 2c 	movq   $0x2c1880,-0x60(%rbp)
+  2c097e:	48 c7 45 a0 70 18 2c 	movq   $0x2c1870,-0x60(%rbp)
   2c0985:	00 
             } else if (flags & FLAG_PLUSPOSITIVE) {
   2c0986:	a8 10                	test   $0x10,%al
   2c0988:	0f 85 a0 fd ff ff    	jne    2c072e <printer_vprintf+0x398>
                 prefix = " ";
   2c098e:	a8 08                	test   $0x8,%al
-  2c0990:	ba 1d 18 2c 00       	mov    $0x2c181d,%edx
-  2c0995:	b8 8d 1a 2c 00       	mov    $0x2c1a8d,%eax
+  2c0990:	ba 0d 18 2c 00       	mov    $0x2c180d,%edx
+  2c0995:	b8 7d 1a 2c 00       	mov    $0x2c1a7d,%eax
   2c099a:	48 0f 44 c2          	cmove  %rdx,%rax
   2c099e:	48 89 45 a0          	mov    %rax,-0x60(%rbp)
   2c09a2:	e9 87 fd ff ff       	jmpq   2c072e <printer_vprintf+0x398>
@@ -1074,8 +1074,8 @@ void printer_vprintf(printer* p, int color, const char* format, va_list val) {
   2c09c2:	0f 84 66 fd ff ff    	je     2c072e <printer_vprintf+0x398>
             prefix = (base == -16 ? "0x" : "0X");
   2c09c8:	41 83 f9 f0          	cmp    $0xfffffff0,%r9d
-  2c09cc:	ba 87 18 2c 00       	mov    $0x2c1887,%edx
-  2c09d1:	b8 82 18 2c 00       	mov    $0x2c1882,%eax
+  2c09cc:	ba 77 18 2c 00       	mov    $0x2c1877,%edx
+  2c09d1:	b8 72 18 2c 00       	mov    $0x2c1872,%eax
   2c09d6:	48 0f 44 c2          	cmove  %rdx,%rax
   2c09da:	48 89 45 a0          	mov    %rax,-0x60(%rbp)
   2c09de:	e9 4b fd ff ff       	jmpq   2c072e <printer_vprintf+0x398>
@@ -1660,9 +1660,9 @@ jump_over:;
   2c1005:	eb c8                	jmp    2c0fcf <__quicksort+0x424>
 
 00000000002c1007 <append_free_list_node>:
+alloc_header *alloc_list_head = NULL;
+alloc_header *alloc_list_tail = NULL;
 int alloc_list_length = 0;
-
-int break_made = 0;
 
 void append_free_list_node(free_list_node *node) {
     node->next = NULL;
@@ -1758,7 +1758,7 @@ void append_alloc_list_node(alloc_header *header) {
         alloc_list_tail = header;
     }
     alloc_list_length++;
-  2c10d0:	83 05 35 0f 00 00 01 	addl   $0x1,0xf35(%rip)        # 2c200c <alloc_list_length>
+  2c10d0:	83 05 31 0f 00 00 01 	addl   $0x1,0xf31(%rip)        # 2c2008 <alloc_list_length>
 }
   2c10d7:	c3                   	retq   
     if (alloc_list_head == NULL && alloc_list_tail == NULL) {
@@ -1792,7 +1792,7 @@ void remove_alloc_list_node(alloc_header *header) {
   2c1116:	48 8b 17             	mov    (%rdi),%rdx
   2c1119:	48 89 10             	mov    %rdx,(%rax)
     alloc_list_length--;
-  2c111c:	83 2d e9 0e 00 00 01 	subl   $0x1,0xee9(%rip)        # 2c200c <alloc_list_length>
+  2c111c:	83 2d e5 0e 00 00 01 	subl   $0x1,0xee5(%rip)        # 2c2008 <alloc_list_length>
 }
   2c1123:	c3                   	retq   
     if (header == alloc_list_head) alloc_list_head = header->next;
@@ -1915,7 +1915,6 @@ uintptr_t allocate_to_free_block(uint64_t sz) {
   2c1203:	41 54                	push   %r12
   2c1205:	53                   	push   %rbx
   2c1206:	48 89 fb             	mov    %rdi,%rbx
-    // find a free block
     free_list_node *free_block = get_free_block(sz);
   2c1209:	e8 2f ff ff ff       	callq  2c113d <get_free_block>
     if (free_block == NULL) return (uintptr_t) -1;
@@ -1923,7 +1922,6 @@ uintptr_t allocate_to_free_block(uint64_t sz) {
   2c1211:	74 57                	je     2c126a <allocate_to_free_block+0x6f>
   2c1213:	49 89 c4             	mov    %rax,%r12
 
-    // remove that free block
     uintptr_t block_addr = (uintptr_t) free_block;
   2c1216:	49 89 c6             	mov    %rax,%r14
     size_t block_size = free_block->sz;
@@ -1932,7 +1930,6 @@ uintptr_t allocate_to_free_block(uint64_t sz) {
   2c121d:	48 89 c7             	mov    %rax,%rdi
   2c1220:	e8 2b fe ff ff       	callq  2c1050 <remove_free_list_node>
 
-    // replace it with an alloc_header
     struct alloc_header *header = (struct alloc_header *) block_addr;
     size_t payload_size = ROUNDUP(sz, ALIGNMENT);
   2c1225:	48 8d 7b 07          	lea    0x7(%rbx),%rdi
@@ -1942,7 +1939,6 @@ uintptr_t allocate_to_free_block(uint64_t sz) {
     header->sz = payload_size;
   2c122d:	49 89 7c 24 10       	mov    %rdi,0x10(%r12)
 
-    // leftover stuff
     size_t data_size = ALLOC_HEADER_SIZE + payload_size;
   2c1232:	48 8d 47 18          	lea    0x18(%rdi),%rax
     size_t leftover = block_size - data_size;
@@ -1990,7 +1986,7 @@ void *malloc(uint64_t sz) {
     if (sz == 0) return NULL;
   2c1273:	b8 00 00 00 00       	mov    $0x0,%eax
   2c1278:	48 85 ff             	test   %rdi,%rdi
-  2c127b:	74 46                	je     2c12c3 <malloc+0x50>
+  2c127b:	74 3c                	je     2c12b9 <malloc+0x46>
 void *malloc(uint64_t sz) {
   2c127d:	55                   	push   %rbp
   2c127e:	48 89 e5             	mov    %rsp,%rbp
@@ -2002,617 +1998,612 @@ void *malloc(uint64_t sz) {
   2c1289:	e8 6d ff ff ff       	callq  2c11fb <allocate_to_free_block>
     while (block_addr == (uintptr_t) -1) {
   2c128e:	48 83 f8 ff          	cmp    $0xffffffffffffffff,%rax
-  2c1292:	75 25                	jne    2c12b9 <malloc+0x46>
+  2c1292:	75 1b                	jne    2c12af <malloc+0x3c>
         if (extend_heap(sz) == NULL) return NULL;
   2c1294:	48 89 df             	mov    %rbx,%rdi
   2c1297:	e8 c1 fe ff ff       	callq  2c115d <extend_heap>
   2c129c:	48 85 c0             	test   %rax,%rax
-  2c129f:	74 1c                	je     2c12bd <malloc+0x4a>
-        break_made = 1;
-  2c12a1:	c7 05 5d 0d 00 00 01 	movl   $0x1,0xd5d(%rip)        # 2c2008 <break_made>
-  2c12a8:	00 00 00 
+  2c129f:	74 12                	je     2c12b3 <malloc+0x40>
         block_addr = allocate_to_free_block(sz);
-  2c12ab:	48 89 df             	mov    %rbx,%rdi
-  2c12ae:	e8 48 ff ff ff       	callq  2c11fb <allocate_to_free_block>
+  2c12a1:	48 89 df             	mov    %rbx,%rdi
+  2c12a4:	e8 52 ff ff ff       	callq  2c11fb <allocate_to_free_block>
     while (block_addr == (uintptr_t) -1) {
-  2c12b3:	48 83 f8 ff          	cmp    $0xffffffffffffffff,%rax
-  2c12b7:	74 db                	je     2c1294 <malloc+0x21>
+  2c12a9:	48 83 f8 ff          	cmp    $0xffffffffffffffff,%rax
+  2c12ad:	74 e5                	je     2c1294 <malloc+0x21>
     }
 
     return (void *) (block_addr + ALLOC_HEADER_SIZE);
-  2c12b9:	48 83 c0 18          	add    $0x18,%rax
+  2c12af:	48 83 c0 18          	add    $0x18,%rax
 }
-  2c12bd:	48 8b 5d f8          	mov    -0x8(%rbp),%rbx
-  2c12c1:	c9                   	leaveq 
-  2c12c2:	c3                   	retq   
-  2c12c3:	c3                   	retq   
+  2c12b3:	48 8b 5d f8          	mov    -0x8(%rbp),%rbx
+  2c12b7:	c9                   	leaveq 
+  2c12b8:	c3                   	retq   
+  2c12b9:	c3                   	retq   
 
-00000000002c12c4 <overflow>:
+00000000002c12ba <overflow>:
 // to the allocated array. The memory is set to 0. if num or sz is equal to 0, then calloc
 // returns NULL or a unique pointer value that can be successfully passed to a later free
 // calloc also checks for size overflow caused by num*sz
 // returns NULL on failure
 int overflow(uint64_t a, uint64_t b) {
     return a * b / a != b || a * b / b != a;
-  2c12c4:	48 89 f9             	mov    %rdi,%rcx
-  2c12c7:	48 0f af ce          	imul   %rsi,%rcx
-  2c12cb:	48 89 c8             	mov    %rcx,%rax
-  2c12ce:	ba 00 00 00 00       	mov    $0x0,%edx
-  2c12d3:	48 f7 f7             	div    %rdi
-  2c12d6:	ba 01 00 00 00       	mov    $0x1,%edx
-  2c12db:	48 39 f0             	cmp    %rsi,%rax
-  2c12de:	74 03                	je     2c12e3 <overflow+0x1f>
+  2c12ba:	48 89 f9             	mov    %rdi,%rcx
+  2c12bd:	48 0f af ce          	imul   %rsi,%rcx
+  2c12c1:	48 89 c8             	mov    %rcx,%rax
+  2c12c4:	ba 00 00 00 00       	mov    $0x0,%edx
+  2c12c9:	48 f7 f7             	div    %rdi
+  2c12cc:	ba 01 00 00 00       	mov    $0x1,%edx
+  2c12d1:	48 39 f0             	cmp    %rsi,%rax
+  2c12d4:	74 03                	je     2c12d9 <overflow+0x1f>
 }
-  2c12e0:	89 d0                	mov    %edx,%eax
-  2c12e2:	c3                   	retq   
+  2c12d6:	89 d0                	mov    %edx,%eax
+  2c12d8:	c3                   	retq   
     return a * b / a != b || a * b / b != a;
-  2c12e3:	48 89 c8             	mov    %rcx,%rax
-  2c12e6:	ba 00 00 00 00       	mov    $0x0,%edx
-  2c12eb:	48 f7 f6             	div    %rsi
-  2c12ee:	48 39 f8             	cmp    %rdi,%rax
-  2c12f1:	0f 95 c2             	setne  %dl
-  2c12f4:	0f b6 d2             	movzbl %dl,%edx
-  2c12f7:	eb e7                	jmp    2c12e0 <overflow+0x1c>
+  2c12d9:	48 89 c8             	mov    %rcx,%rax
+  2c12dc:	ba 00 00 00 00       	mov    $0x0,%edx
+  2c12e1:	48 f7 f6             	div    %rsi
+  2c12e4:	48 39 f8             	cmp    %rdi,%rax
+  2c12e7:	0f 95 c2             	setne  %dl
+  2c12ea:	0f b6 d2             	movzbl %dl,%edx
+  2c12ed:	eb e7                	jmp    2c12d6 <overflow+0x1c>
 
-00000000002c12f9 <calloc>:
+00000000002c12ef <calloc>:
 
 void *calloc(uint64_t num, uint64_t sz) {
-  2c12f9:	55                   	push   %rbp
-  2c12fa:	48 89 e5             	mov    %rsp,%rbp
-  2c12fd:	41 55                	push   %r13
-  2c12ff:	41 54                	push   %r12
-  2c1301:	53                   	push   %rbx
-  2c1302:	48 83 ec 08          	sub    $0x8,%rsp
+  2c12ef:	55                   	push   %rbp
+  2c12f0:	48 89 e5             	mov    %rsp,%rbp
+  2c12f3:	41 55                	push   %r13
+  2c12f5:	41 54                	push   %r12
+  2c12f7:	53                   	push   %rbx
+  2c12f8:	48 83 ec 08          	sub    $0x8,%rsp
     if (num == 0 || sz == 0 || overflow(num, sz)) return NULL;
-  2c1306:	48 85 ff             	test   %rdi,%rdi
-  2c1309:	74 54                	je     2c135f <calloc+0x66>
-  2c130b:	48 89 fb             	mov    %rdi,%rbx
-  2c130e:	49 89 f4             	mov    %rsi,%r12
-  2c1311:	48 85 f6             	test   %rsi,%rsi
-  2c1314:	74 49                	je     2c135f <calloc+0x66>
-  2c1316:	e8 a9 ff ff ff       	callq  2c12c4 <overflow>
-  2c131b:	41 bd 00 00 00 00    	mov    $0x0,%r13d
-  2c1321:	85 c0                	test   %eax,%eax
-  2c1323:	75 2c                	jne    2c1351 <calloc+0x58>
+  2c12fc:	48 85 ff             	test   %rdi,%rdi
+  2c12ff:	74 54                	je     2c1355 <calloc+0x66>
+  2c1301:	48 89 fb             	mov    %rdi,%rbx
+  2c1304:	49 89 f4             	mov    %rsi,%r12
+  2c1307:	48 85 f6             	test   %rsi,%rsi
+  2c130a:	74 49                	je     2c1355 <calloc+0x66>
+  2c130c:	e8 a9 ff ff ff       	callq  2c12ba <overflow>
+  2c1311:	41 bd 00 00 00 00    	mov    $0x0,%r13d
+  2c1317:	85 c0                	test   %eax,%eax
+  2c1319:	75 2c                	jne    2c1347 <calloc+0x58>
 
     size_t size = ROUNDUP(num * sz, ALIGNMENT);
-  2c1325:	49 0f af dc          	imul   %r12,%rbx
-  2c1329:	48 83 c3 07          	add    $0x7,%rbx
-  2c132d:	48 83 e3 f8          	and    $0xfffffffffffffff8,%rbx
+  2c131b:	49 0f af dc          	imul   %r12,%rbx
+  2c131f:	48 83 c3 07          	add    $0x7,%rbx
+  2c1323:	48 83 e3 f8          	and    $0xfffffffffffffff8,%rbx
     void *malloc_addr = malloc(size);
-  2c1331:	48 89 df             	mov    %rbx,%rdi
-  2c1334:	e8 3a ff ff ff       	callq  2c1273 <malloc>
-  2c1339:	49 89 c5             	mov    %rax,%r13
+  2c1327:	48 89 df             	mov    %rbx,%rdi
+  2c132a:	e8 44 ff ff ff       	callq  2c1273 <malloc>
+  2c132f:	49 89 c5             	mov    %rax,%r13
     if (malloc_addr == NULL) return NULL;
-  2c133c:	48 85 c0             	test   %rax,%rax
-  2c133f:	74 10                	je     2c1351 <calloc+0x58>
+  2c1332:	48 85 c0             	test   %rax,%rax
+  2c1335:	74 10                	je     2c1347 <calloc+0x58>
 
     memset(malloc_addr, 0, size);
-  2c1341:	48 89 da             	mov    %rbx,%rdx
-  2c1344:	be 00 00 00 00       	mov    $0x0,%esi
-  2c1349:	48 89 c7             	mov    %rax,%rdi
-  2c134c:	e8 34 ef ff ff       	callq  2c0285 <memset>
+  2c1337:	48 89 da             	mov    %rbx,%rdx
+  2c133a:	be 00 00 00 00       	mov    $0x0,%esi
+  2c133f:	48 89 c7             	mov    %rax,%rdi
+  2c1342:	e8 3e ef ff ff       	callq  2c0285 <memset>
     return malloc_addr;
 }
-  2c1351:	4c 89 e8             	mov    %r13,%rax
-  2c1354:	48 83 c4 08          	add    $0x8,%rsp
-  2c1358:	5b                   	pop    %rbx
-  2c1359:	41 5c                	pop    %r12
-  2c135b:	41 5d                	pop    %r13
-  2c135d:	5d                   	pop    %rbp
-  2c135e:	c3                   	retq   
+  2c1347:	4c 89 e8             	mov    %r13,%rax
+  2c134a:	48 83 c4 08          	add    $0x8,%rsp
+  2c134e:	5b                   	pop    %rbx
+  2c134f:	41 5c                	pop    %r12
+  2c1351:	41 5d                	pop    %r13
+  2c1353:	5d                   	pop    %rbp
+  2c1354:	c3                   	retq   
     if (num == 0 || sz == 0 || overflow(num, sz)) return NULL;
-  2c135f:	41 bd 00 00 00 00    	mov    $0x0,%r13d
-  2c1365:	eb ea                	jmp    2c1351 <calloc+0x58>
+  2c1355:	41 bd 00 00 00 00    	mov    $0x0,%r13d
+  2c135b:	eb ea                	jmp    2c1347 <calloc+0x58>
 
-00000000002c1367 <free>:
+00000000002c135d <free>:
 // the free funtion frees the memory space pointed to by ptr, which must have been returned
 // by a previous call to malloc or realloc, or if free has already been called before, then
 // undefined behavior occurs
 // if ptr == NULL, then no operation happens
 void free(void *ptr) {
     if (ptr == NULL) return;
-  2c1367:	48 85 ff             	test   %rdi,%rdi
-  2c136a:	74 2c                	je     2c1398 <free+0x31>
+  2c135d:	48 85 ff             	test   %rdi,%rdi
+  2c1360:	74 2c                	je     2c138e <free+0x31>
 void free(void *ptr) {
-  2c136c:	55                   	push   %rbp
-  2c136d:	48 89 e5             	mov    %rsp,%rbp
-  2c1370:	41 54                	push   %r12
-  2c1372:	53                   	push   %rbx
+  2c1362:	55                   	push   %rbp
+  2c1363:	48 89 e5             	mov    %rsp,%rbp
+  2c1366:	41 54                	push   %r12
+  2c1368:	53                   	push   %rbx
 
     uintptr_t block_addr = (uintptr_t) ptr - ALLOC_HEADER_SIZE;
-  2c1373:	48 8d 5f e8          	lea    -0x18(%rdi),%rbx
+  2c1369:	48 8d 5f e8          	lea    -0x18(%rdi),%rbx
     struct alloc_header *header = (struct alloc_header *) block_addr;
     size_t block_size = ALLOC_HEADER_SIZE + header->sz;
-  2c1377:	48 8b 47 f8          	mov    -0x8(%rdi),%rax
-  2c137b:	4c 8d 60 18          	lea    0x18(%rax),%r12
+  2c136d:	48 8b 47 f8          	mov    -0x8(%rdi),%rax
+  2c1371:	4c 8d 60 18          	lea    0x18(%rax),%r12
     remove_alloc_list_node(header);
-  2c137f:	48 89 df             	mov    %rbx,%rdi
-  2c1382:	e8 64 fd ff ff       	callq  2c10eb <remove_alloc_list_node>
+  2c1375:	48 89 df             	mov    %rbx,%rdi
+  2c1378:	e8 6e fd ff ff       	callq  2c10eb <remove_alloc_list_node>
 
     struct free_list_node *node = (struct free_list_node *) block_addr;
     node->sz = block_size;
-  2c1387:	4c 89 63 10          	mov    %r12,0x10(%rbx)
+  2c137d:	4c 89 63 10          	mov    %r12,0x10(%rbx)
     append_free_list_node(node);
-  2c138b:	48 89 df             	mov    %rbx,%rdi
-  2c138e:	e8 74 fc ff ff       	callq  2c1007 <append_free_list_node>
+  2c1381:	48 89 df             	mov    %rbx,%rdi
+  2c1384:	e8 7e fc ff ff       	callq  2c1007 <append_free_list_node>
     return;
 }
-  2c1393:	5b                   	pop    %rbx
-  2c1394:	41 5c                	pop    %r12
-  2c1396:	5d                   	pop    %rbp
-  2c1397:	c3                   	retq   
-  2c1398:	c3                   	retq   
+  2c1389:	5b                   	pop    %rbx
+  2c138a:	41 5c                	pop    %r12
+  2c138c:	5d                   	pop    %rbp
+  2c138d:	c3                   	retq   
+  2c138e:	c3                   	retq   
 
-00000000002c1399 <realloc>:
+00000000002c138f <realloc>:
 void *realloc(void * ptr, uint64_t sz) {
-  2c1399:	55                   	push   %rbp
-  2c139a:	48 89 e5             	mov    %rsp,%rbp
-  2c139d:	41 54                	push   %r12
-  2c139f:	53                   	push   %rbx
+  2c138f:	55                   	push   %rbp
+  2c1390:	48 89 e5             	mov    %rsp,%rbp
+  2c1393:	41 54                	push   %r12
+  2c1395:	53                   	push   %rbx
     if (ptr == NULL) return malloc(sz);
-  2c13a0:	48 85 ff             	test   %rdi,%rdi
-  2c13a3:	74 40                	je     2c13e5 <realloc+0x4c>
-  2c13a5:	48 89 fb             	mov    %rdi,%rbx
+  2c1396:	48 85 ff             	test   %rdi,%rdi
+  2c1399:	74 40                	je     2c13db <realloc+0x4c>
+  2c139b:	48 89 fb             	mov    %rdi,%rbx
     if (sz == 0) { free(ptr); return NULL; }
-  2c13a8:	48 85 f6             	test   %rsi,%rsi
-  2c13ab:	74 45                	je     2c13f2 <realloc+0x59>
+  2c139e:	48 85 f6             	test   %rsi,%rsi
+  2c13a1:	74 45                	je     2c13e8 <realloc+0x59>
     if (original_sz == sz) return ptr;
-  2c13ad:	49 89 fc             	mov    %rdi,%r12
-  2c13b0:	48 3b 77 f8          	cmp    -0x8(%rdi),%rsi
-  2c13b4:	74 27                	je     2c13dd <realloc+0x44>
+  2c13a3:	49 89 fc             	mov    %rdi,%r12
+  2c13a6:	48 3b 77 f8          	cmp    -0x8(%rdi),%rsi
+  2c13aa:	74 27                	je     2c13d3 <realloc+0x44>
     void *malloc_addr = malloc(sz);
-  2c13b6:	48 89 f7             	mov    %rsi,%rdi
-  2c13b9:	e8 b5 fe ff ff       	callq  2c1273 <malloc>
-  2c13be:	49 89 c4             	mov    %rax,%r12
+  2c13ac:	48 89 f7             	mov    %rsi,%rdi
+  2c13af:	e8 bf fe ff ff       	callq  2c1273 <malloc>
+  2c13b4:	49 89 c4             	mov    %rax,%r12
     if (malloc_addr == NULL) return NULL;
-  2c13c1:	48 85 c0             	test   %rax,%rax
-  2c13c4:	74 17                	je     2c13dd <realloc+0x44>
+  2c13b7:	48 85 c0             	test   %rax,%rax
+  2c13ba:	74 17                	je     2c13d3 <realloc+0x44>
     memcpy(malloc_addr, ptr, header->sz);
-  2c13c6:	48 8b 50 f8          	mov    -0x8(%rax),%rdx
-  2c13ca:	48 89 de             	mov    %rbx,%rsi
-  2c13cd:	48 89 c7             	mov    %rax,%rdi
-  2c13d0:	e8 47 ee ff ff       	callq  2c021c <memcpy>
+  2c13bc:	48 8b 50 f8          	mov    -0x8(%rax),%rdx
+  2c13c0:	48 89 de             	mov    %rbx,%rsi
+  2c13c3:	48 89 c7             	mov    %rax,%rdi
+  2c13c6:	e8 51 ee ff ff       	callq  2c021c <memcpy>
     free(ptr);
-  2c13d5:	48 89 df             	mov    %rbx,%rdi
-  2c13d8:	e8 8a ff ff ff       	callq  2c1367 <free>
+  2c13cb:	48 89 df             	mov    %rbx,%rdi
+  2c13ce:	e8 8a ff ff ff       	callq  2c135d <free>
 }
-  2c13dd:	4c 89 e0             	mov    %r12,%rax
-  2c13e0:	5b                   	pop    %rbx
-  2c13e1:	41 5c                	pop    %r12
-  2c13e3:	5d                   	pop    %rbp
-  2c13e4:	c3                   	retq   
+  2c13d3:	4c 89 e0             	mov    %r12,%rax
+  2c13d6:	5b                   	pop    %rbx
+  2c13d7:	41 5c                	pop    %r12
+  2c13d9:	5d                   	pop    %rbp
+  2c13da:	c3                   	retq   
     if (ptr == NULL) return malloc(sz);
-  2c13e5:	48 89 f7             	mov    %rsi,%rdi
-  2c13e8:	e8 86 fe ff ff       	callq  2c1273 <malloc>
-  2c13ed:	49 89 c4             	mov    %rax,%r12
-  2c13f0:	eb eb                	jmp    2c13dd <realloc+0x44>
+  2c13db:	48 89 f7             	mov    %rsi,%rdi
+  2c13de:	e8 90 fe ff ff       	callq  2c1273 <malloc>
+  2c13e3:	49 89 c4             	mov    %rax,%r12
+  2c13e6:	eb eb                	jmp    2c13d3 <realloc+0x44>
     if (sz == 0) { free(ptr); return NULL; }
-  2c13f2:	e8 70 ff ff ff       	callq  2c1367 <free>
-  2c13f7:	41 bc 00 00 00 00    	mov    $0x0,%r12d
-  2c13fd:	eb de                	jmp    2c13dd <realloc+0x44>
+  2c13e8:	e8 70 ff ff ff       	callq  2c135d <free>
+  2c13ed:	41 bc 00 00 00 00    	mov    $0x0,%r12d
+  2c13f3:	eb de                	jmp    2c13d3 <realloc+0x44>
 
-00000000002c13ff <adjacent>:
+00000000002c13f5 <adjacent>:
 
 int adjacent(ptr_with_size *ptrs_with_size, int i, int j) {
     ptr_with_size a = ptrs_with_size[i];
-  2c13ff:	48 63 f6             	movslq %esi,%rsi
-  2c1402:	48 c1 e6 04          	shl    $0x4,%rsi
-  2c1406:	48 01 fe             	add    %rdi,%rsi
+  2c13f5:	48 63 f6             	movslq %esi,%rsi
+  2c13f8:	48 c1 e6 04          	shl    $0x4,%rsi
+  2c13fc:	48 01 fe             	add    %rdi,%rsi
     ptr_with_size b = ptrs_with_size[j];
     return (uintptr_t) a.ptr + a.size == (uintptr_t) b.ptr;
-  2c1409:	48 8b 46 08          	mov    0x8(%rsi),%rax
-  2c140d:	48 03 06             	add    (%rsi),%rax
+  2c13ff:	48 8b 46 08          	mov    0x8(%rsi),%rax
+  2c1403:	48 03 06             	add    (%rsi),%rax
     ptr_with_size b = ptrs_with_size[j];
-  2c1410:	48 63 d2             	movslq %edx,%rdx
-  2c1413:	48 c1 e2 04          	shl    $0x4,%rdx
+  2c1406:	48 63 d2             	movslq %edx,%rdx
+  2c1409:	48 c1 e2 04          	shl    $0x4,%rdx
     return (uintptr_t) a.ptr + a.size == (uintptr_t) b.ptr;
-  2c1417:	48 39 04 17          	cmp    %rax,(%rdi,%rdx,1)
-  2c141b:	0f 94 c0             	sete   %al
-  2c141e:	0f b6 c0             	movzbl %al,%eax
+  2c140d:	48 39 04 17          	cmp    %rax,(%rdi,%rdx,1)
+  2c1411:	0f 94 c0             	sete   %al
+  2c1414:	0f b6 c0             	movzbl %al,%eax
 }
-  2c1421:	c3                   	retq   
+  2c1417:	c3                   	retq   
 
-00000000002c1422 <coalesce>:
+00000000002c1418 <coalesce>:
 
 void coalesce(ptr_with_size *ptrs_with_size, int i, int j) {
-  2c1422:	55                   	push   %rbp
-  2c1423:	48 89 e5             	mov    %rsp,%rbp
+  2c1418:	55                   	push   %rbp
+  2c1419:	48 89 e5             	mov    %rsp,%rbp
     struct free_list_node *node_a = (struct free_list_node *) ptrs_with_size[i].ptr;
-  2c1426:	48 63 f6             	movslq %esi,%rsi
-  2c1429:	48 c1 e6 04          	shl    $0x4,%rsi
-  2c142d:	48 8b 04 37          	mov    (%rdi,%rsi,1),%rax
+  2c141c:	48 63 f6             	movslq %esi,%rsi
+  2c141f:	48 c1 e6 04          	shl    $0x4,%rsi
+  2c1423:	48 8b 04 37          	mov    (%rdi,%rsi,1),%rax
     struct free_list_node *node_b = (struct free_list_node *) ptrs_with_size[j].ptr;
-  2c1431:	48 63 d2             	movslq %edx,%rdx
-  2c1434:	48 c1 e2 04          	shl    $0x4,%rdx
-  2c1438:	48 8b 3c 17          	mov    (%rdi,%rdx,1),%rdi
+  2c1427:	48 63 d2             	movslq %edx,%rdx
+  2c142a:	48 c1 e2 04          	shl    $0x4,%rdx
+  2c142e:	48 8b 3c 17          	mov    (%rdi,%rdx,1),%rdi
     node_a->sz += node_b->sz;
-  2c143c:	48 8b 57 10          	mov    0x10(%rdi),%rdx
-  2c1440:	48 01 50 10          	add    %rdx,0x10(%rax)
+  2c1432:	48 8b 57 10          	mov    0x10(%rdi),%rdx
+  2c1436:	48 01 50 10          	add    %rdx,0x10(%rax)
     remove_free_list_node(node_b);
-  2c1444:	e8 07 fc ff ff       	callq  2c1050 <remove_free_list_node>
+  2c143a:	e8 11 fc ff ff       	callq  2c1050 <remove_free_list_node>
 }
-  2c1449:	5d                   	pop    %rbp
-  2c144a:	c3                   	retq   
+  2c143f:	5d                   	pop    %rbp
+  2c1440:	c3                   	retq   
 
-00000000002c144b <defrag>:
+00000000002c1441 <defrag>:
 
 void defrag() {
-  2c144b:	55                   	push   %rbp
-  2c144c:	48 89 e5             	mov    %rsp,%rbp
-  2c144f:	41 56                	push   %r14
-  2c1451:	41 55                	push   %r13
-  2c1453:	41 54                	push   %r12
-  2c1455:	53                   	push   %rbx
+  2c1441:	55                   	push   %rbp
+  2c1442:	48 89 e5             	mov    %rsp,%rbp
+  2c1445:	41 56                	push   %r14
+  2c1447:	41 55                	push   %r13
+  2c1449:	41 54                	push   %r12
+  2c144b:	53                   	push   %rbx
     ptr_with_size ptrs_with_size[free_list_length];
-  2c1456:	8b 0d c4 0b 00 00    	mov    0xbc4(%rip),%ecx        # 2c2020 <free_list_length>
-  2c145c:	48 63 f1             	movslq %ecx,%rsi
-  2c145f:	48 89 f0             	mov    %rsi,%rax
-  2c1462:	48 c1 e0 04          	shl    $0x4,%rax
-  2c1466:	48 29 c4             	sub    %rax,%rsp
-  2c1469:	49 89 e5             	mov    %rsp,%r13
+  2c144c:	8b 0d ce 0b 00 00    	mov    0xbce(%rip),%ecx        # 2c2020 <free_list_length>
+  2c1452:	48 63 f1             	movslq %ecx,%rsi
+  2c1455:	48 89 f0             	mov    %rsi,%rax
+  2c1458:	48 c1 e0 04          	shl    $0x4,%rax
+  2c145c:	48 29 c4             	sub    %rax,%rsp
+  2c145f:	49 89 e5             	mov    %rsp,%r13
     free_list_node *curr = free_list_head;
-  2c146c:	48 8b 15 bd 0b 00 00 	mov    0xbbd(%rip),%rdx        # 2c2030 <free_list_head>
+  2c1462:	48 8b 15 c7 0b 00 00 	mov    0xbc7(%rip),%rdx        # 2c2030 <free_list_head>
     for (int i = 0; i < free_list_length; i++, curr = curr->next) {
-  2c1473:	85 c9                	test   %ecx,%ecx
-  2c1475:	7e 24                	jle    2c149b <defrag+0x50>
-  2c1477:	4c 89 e8             	mov    %r13,%rax
-  2c147a:	89 c9                	mov    %ecx,%ecx
-  2c147c:	48 c1 e1 04          	shl    $0x4,%rcx
-  2c1480:	4c 01 e9             	add    %r13,%rcx
+  2c1469:	85 c9                	test   %ecx,%ecx
+  2c146b:	7e 24                	jle    2c1491 <defrag+0x50>
+  2c146d:	4c 89 e8             	mov    %r13,%rax
+  2c1470:	89 c9                	mov    %ecx,%ecx
+  2c1472:	48 c1 e1 04          	shl    $0x4,%rcx
+  2c1476:	4c 01 e9             	add    %r13,%rcx
         ptrs_with_size[i].ptr = curr;
-  2c1483:	48 89 10             	mov    %rdx,(%rax)
+  2c1479:	48 89 10             	mov    %rdx,(%rax)
         ptrs_with_size[i].size = curr->sz;
-  2c1486:	48 8b 7a 10          	mov    0x10(%rdx),%rdi
-  2c148a:	48 89 78 08          	mov    %rdi,0x8(%rax)
+  2c147c:	48 8b 7a 10          	mov    0x10(%rdx),%rdi
+  2c1480:	48 89 78 08          	mov    %rdi,0x8(%rax)
     for (int i = 0; i < free_list_length; i++, curr = curr->next) {
-  2c148e:	48 8b 52 08          	mov    0x8(%rdx),%rdx
-  2c1492:	48 83 c0 10          	add    $0x10,%rax
-  2c1496:	48 39 c8             	cmp    %rcx,%rax
-  2c1499:	75 e8                	jne    2c1483 <defrag+0x38>
+  2c1484:	48 8b 52 08          	mov    0x8(%rdx),%rdx
+  2c1488:	48 83 c0 10          	add    $0x10,%rax
+  2c148c:	48 39 c8             	cmp    %rcx,%rax
+  2c148f:	75 e8                	jne    2c1479 <defrag+0x38>
     }
 
     __quicksort(ptrs_with_size, free_list_length, sizeof(ptrs_with_size[0]), &cmp_ptr_ascending);
-  2c149b:	b9 91 0b 2c 00       	mov    $0x2c0b91,%ecx
-  2c14a0:	ba 10 00 00 00       	mov    $0x10,%edx
-  2c14a5:	4c 89 ef             	mov    %r13,%rdi
-  2c14a8:	e8 fe f6 ff ff       	callq  2c0bab <__quicksort>
+  2c1491:	b9 91 0b 2c 00       	mov    $0x2c0b91,%ecx
+  2c1496:	ba 10 00 00 00       	mov    $0x10,%edx
+  2c149b:	4c 89 ef             	mov    %r13,%rdi
+  2c149e:	e8 08 f7 ff ff       	callq  2c0bab <__quicksort>
 
     int i = 0, length = free_list_length;
-  2c14ad:	44 8b 35 6c 0b 00 00 	mov    0xb6c(%rip),%r14d        # 2c2020 <free_list_length>
+  2c14a3:	44 8b 35 76 0b 00 00 	mov    0xb76(%rip),%r14d        # 2c2020 <free_list_length>
     for (int j = 1; j < length; j++) {
-  2c14b4:	41 83 fe 01          	cmp    $0x1,%r14d
-  2c14b8:	7e 38                	jle    2c14f2 <defrag+0xa7>
-  2c14ba:	bb 01 00 00 00       	mov    $0x1,%ebx
+  2c14aa:	41 83 fe 01          	cmp    $0x1,%r14d
+  2c14ae:	7e 38                	jle    2c14e8 <defrag+0xa7>
+  2c14b0:	bb 01 00 00 00       	mov    $0x1,%ebx
     int i = 0, length = free_list_length;
-  2c14bf:	41 bc 00 00 00 00    	mov    $0x0,%r12d
-  2c14c5:	eb 15                	jmp    2c14dc <defrag+0x91>
+  2c14b5:	41 bc 00 00 00 00    	mov    $0x0,%r12d
+  2c14bb:	eb 15                	jmp    2c14d2 <defrag+0x91>
         if (adjacent(ptrs_with_size, i, j)) coalesce(ptrs_with_size, i, j);
-  2c14c7:	89 da                	mov    %ebx,%edx
-  2c14c9:	44 89 e6             	mov    %r12d,%esi
-  2c14cc:	4c 89 ef             	mov    %r13,%rdi
-  2c14cf:	e8 4e ff ff ff       	callq  2c1422 <coalesce>
+  2c14bd:	89 da                	mov    %ebx,%edx
+  2c14bf:	44 89 e6             	mov    %r12d,%esi
+  2c14c2:	4c 89 ef             	mov    %r13,%rdi
+  2c14c5:	e8 4e ff ff ff       	callq  2c1418 <coalesce>
     for (int j = 1; j < length; j++) {
-  2c14d4:	83 c3 01             	add    $0x1,%ebx
-  2c14d7:	41 39 de             	cmp    %ebx,%r14d
-  2c14da:	74 16                	je     2c14f2 <defrag+0xa7>
+  2c14ca:	83 c3 01             	add    $0x1,%ebx
+  2c14cd:	41 39 de             	cmp    %ebx,%r14d
+  2c14d0:	74 16                	je     2c14e8 <defrag+0xa7>
         if (adjacent(ptrs_with_size, i, j)) coalesce(ptrs_with_size, i, j);
-  2c14dc:	89 da                	mov    %ebx,%edx
-  2c14de:	44 89 e6             	mov    %r12d,%esi
-  2c14e1:	4c 89 ef             	mov    %r13,%rdi
-  2c14e4:	e8 16 ff ff ff       	callq  2c13ff <adjacent>
-  2c14e9:	85 c0                	test   %eax,%eax
-  2c14eb:	75 da                	jne    2c14c7 <defrag+0x7c>
-  2c14ed:	41 89 dc             	mov    %ebx,%r12d
-  2c14f0:	eb e2                	jmp    2c14d4 <defrag+0x89>
+  2c14d2:	89 da                	mov    %ebx,%edx
+  2c14d4:	44 89 e6             	mov    %r12d,%esi
+  2c14d7:	4c 89 ef             	mov    %r13,%rdi
+  2c14da:	e8 16 ff ff ff       	callq  2c13f5 <adjacent>
+  2c14df:	85 c0                	test   %eax,%eax
+  2c14e1:	75 da                	jne    2c14bd <defrag+0x7c>
+  2c14e3:	41 89 dc             	mov    %ebx,%r12d
+  2c14e6:	eb e2                	jmp    2c14ca <defrag+0x89>
         else i = j;
     }
 }
-  2c14f2:	48 8d 65 e0          	lea    -0x20(%rbp),%rsp
-  2c14f6:	5b                   	pop    %rbx
-  2c14f7:	41 5c                	pop    %r12
-  2c14f9:	41 5d                	pop    %r13
-  2c14fb:	41 5e                	pop    %r14
-  2c14fd:	5d                   	pop    %rbp
-  2c14fe:	c3                   	retq   
+  2c14e8:	48 8d 65 e0          	lea    -0x20(%rbp),%rsp
+  2c14ec:	5b                   	pop    %rbx
+  2c14ed:	41 5c                	pop    %r12
+  2c14ef:	41 5d                	pop    %r13
+  2c14f1:	41 5e                	pop    %r14
+  2c14f3:	5d                   	pop    %rbp
+  2c14f4:	c3                   	retq   
 
-00000000002c14ff <heap_info>:
+00000000002c14f5 <heap_info>:
 
 int heap_info(heap_info_struct * info) {
-  2c14ff:	55                   	push   %rbp
-  2c1500:	48 89 e5             	mov    %rsp,%rbp
-  2c1503:	41 57                	push   %r15
-  2c1505:	41 56                	push   %r14
-  2c1507:	41 55                	push   %r13
-  2c1509:	41 54                	push   %r12
-  2c150b:	53                   	push   %rbx
-  2c150c:	48 83 ec 18          	sub    $0x18,%rsp
-  2c1510:	49 89 fd             	mov    %rdi,%r13
+  2c14f5:	55                   	push   %rbp
+  2c14f6:	48 89 e5             	mov    %rsp,%rbp
+  2c14f9:	41 57                	push   %r15
+  2c14fb:	41 56                	push   %r14
+  2c14fd:	41 55                	push   %r13
+  2c14ff:	41 54                	push   %r12
+  2c1501:	53                   	push   %rbx
+  2c1502:	48 83 ec 18          	sub    $0x18,%rsp
+  2c1506:	49 89 fd             	mov    %rdi,%r13
     int init_alloc_list_length = alloc_list_length;
-  2c1513:	8b 05 f3 0a 00 00    	mov    0xaf3(%rip),%eax        # 2c200c <alloc_list_length>
-  2c1519:	89 45 cc             	mov    %eax,-0x34(%rbp)
+  2c1509:	8b 05 f9 0a 00 00    	mov    0xaf9(%rip),%eax        # 2c2008 <alloc_list_length>
+  2c150f:	89 45 cc             	mov    %eax,-0x34(%rbp)
     
-    // free space + largest free chunk
     int largest_free_chunk = 0;
     int free_space = 0;
     free_list_node *curr_ = free_list_head;
-  2c151c:	48 8b 05 0d 0b 00 00 	mov    0xb0d(%rip),%rax        # 2c2030 <free_list_head>
+  2c1512:	48 8b 05 17 0b 00 00 	mov    0xb17(%rip),%rax        # 2c2030 <free_list_head>
     for (int i = 0; i < free_list_length; i++, curr_ = curr_->next) {
-  2c1523:	8b 3d f7 0a 00 00    	mov    0xaf7(%rip),%edi        # 2c2020 <free_list_length>
-  2c1529:	85 ff                	test   %edi,%edi
-  2c152b:	7e 64                	jle    2c1591 <heap_info+0x92>
-  2c152d:	ba 00 00 00 00       	mov    $0x0,%edx
+  2c1519:	8b 3d 01 0b 00 00    	mov    0xb01(%rip),%edi        # 2c2020 <free_list_length>
+  2c151f:	85 ff                	test   %edi,%edi
+  2c1521:	7e 64                	jle    2c1587 <heap_info+0x92>
+  2c1523:	ba 00 00 00 00       	mov    $0x0,%edx
     int free_space = 0;
-  2c1532:	41 bc 00 00 00 00    	mov    $0x0,%r12d
+  2c1528:	41 bc 00 00 00 00    	mov    $0x0,%r12d
     int largest_free_chunk = 0;
-  2c1538:	bb 00 00 00 00       	mov    $0x0,%ebx
+  2c152e:	bb 00 00 00 00       	mov    $0x0,%ebx
         int sz = (int) curr_->sz;
-  2c153d:	48 8b 48 10          	mov    0x10(%rax),%rcx
+  2c1533:	48 8b 48 10          	mov    0x10(%rax),%rcx
         largest_free_chunk = MAX(largest_free_chunk, sz);
-  2c1541:	39 cb                	cmp    %ecx,%ebx
-  2c1543:	0f 4c d9             	cmovl  %ecx,%ebx
+  2c1537:	39 cb                	cmp    %ecx,%ebx
+  2c1539:	0f 4c d9             	cmovl  %ecx,%ebx
         free_space += sz;
-  2c1546:	41 01 cc             	add    %ecx,%r12d
+  2c153c:	41 01 cc             	add    %ecx,%r12d
     for (int i = 0; i < free_list_length; i++, curr_ = curr_->next) {
-  2c1549:	83 c2 01             	add    $0x1,%edx
-  2c154c:	48 8b 40 08          	mov    0x8(%rax),%rax
-  2c1550:	39 fa                	cmp    %edi,%edx
-  2c1552:	75 e9                	jne    2c153d <heap_info+0x3e>
+  2c153f:	83 c2 01             	add    $0x1,%edx
+  2c1542:	48 8b 40 08          	mov    0x8(%rax),%rax
+  2c1546:	39 fa                	cmp    %edi,%edx
+  2c1548:	75 e9                	jne    2c1533 <heap_info+0x3e>
     }
 
-    // size + ptr arrays
     if (init_alloc_list_length == 0) {
-  2c1554:	41 bf 00 00 00 00    	mov    $0x0,%r15d
-  2c155a:	41 be 00 00 00 00    	mov    $0x0,%r14d
-  2c1560:	83 7d cc 00          	cmpl   $0x0,-0x34(%rbp)
-  2c1564:	75 38                	jne    2c159e <heap_info+0x9f>
+  2c154a:	41 bf 00 00 00 00    	mov    $0x0,%r15d
+  2c1550:	41 be 00 00 00 00    	mov    $0x0,%r14d
+  2c1556:	83 7d cc 00          	cmpl   $0x0,-0x34(%rbp)
+  2c155a:	75 38                	jne    2c1594 <heap_info+0x9f>
         info->size_array = NULL;
-  2c1566:	4d 89 7d 08          	mov    %r15,0x8(%r13)
+  2c155c:	4d 89 7d 08          	mov    %r15,0x8(%r13)
         info->ptr_array = NULL;
-  2c156a:	4d 89 75 10          	mov    %r14,0x10(%r13)
+  2c1560:	4d 89 75 10          	mov    %r14,0x10(%r13)
 
         info->size_array = size_array;
         info->ptr_array = ptr_array;
     }
 
     info->num_allocs = init_alloc_list_length;
-  2c156e:	8b 45 cc             	mov    -0x34(%rbp),%eax
-  2c1571:	41 89 45 00          	mov    %eax,0x0(%r13)
+  2c1564:	8b 45 cc             	mov    -0x34(%rbp),%eax
+  2c1567:	41 89 45 00          	mov    %eax,0x0(%r13)
     info->largest_free_chunk = largest_free_chunk;
-  2c1575:	41 89 5d 1c          	mov    %ebx,0x1c(%r13)
+  2c156b:	41 89 5d 1c          	mov    %ebx,0x1c(%r13)
     info->free_space = free_space;
-  2c1579:	45 89 65 18          	mov    %r12d,0x18(%r13)
+  2c156f:	45 89 65 18          	mov    %r12d,0x18(%r13)
 
     return 0;
-  2c157d:	b8 00 00 00 00       	mov    $0x0,%eax
+  2c1573:	b8 00 00 00 00       	mov    $0x0,%eax
 }
-  2c1582:	48 83 c4 18          	add    $0x18,%rsp
-  2c1586:	5b                   	pop    %rbx
-  2c1587:	41 5c                	pop    %r12
-  2c1589:	41 5d                	pop    %r13
-  2c158b:	41 5e                	pop    %r14
-  2c158d:	41 5f                	pop    %r15
-  2c158f:	5d                   	pop    %rbp
-  2c1590:	c3                   	retq   
+  2c1578:	48 83 c4 18          	add    $0x18,%rsp
+  2c157c:	5b                   	pop    %rbx
+  2c157d:	41 5c                	pop    %r12
+  2c157f:	41 5d                	pop    %r13
+  2c1581:	41 5e                	pop    %r14
+  2c1583:	41 5f                	pop    %r15
+  2c1585:	5d                   	pop    %rbp
+  2c1586:	c3                   	retq   
     int free_space = 0;
-  2c1591:	41 bc 00 00 00 00    	mov    $0x0,%r12d
+  2c1587:	41 bc 00 00 00 00    	mov    $0x0,%r12d
     int largest_free_chunk = 0;
-  2c1597:	bb 00 00 00 00       	mov    $0x0,%ebx
-  2c159c:	eb b6                	jmp    2c1554 <heap_info+0x55>
+  2c158d:	bb 00 00 00 00       	mov    $0x0,%ebx
+  2c1592:	eb b6                	jmp    2c154a <heap_info+0x55>
         long *size_array = (long *) malloc (sizeof(long) * init_alloc_list_length);
-  2c159e:	48 63 45 cc          	movslq -0x34(%rbp),%rax
-  2c15a2:	48 89 45 c0          	mov    %rax,-0x40(%rbp)
-  2c15a6:	4c 8d 34 c5 00 00 00 	lea    0x0(,%rax,8),%r14
-  2c15ad:	00 
-  2c15ae:	4c 89 f7             	mov    %r14,%rdi
-  2c15b1:	e8 bd fc ff ff       	callq  2c1273 <malloc>
-  2c15b6:	49 89 c7             	mov    %rax,%r15
+  2c1594:	48 63 45 cc          	movslq -0x34(%rbp),%rax
+  2c1598:	48 89 45 c0          	mov    %rax,-0x40(%rbp)
+  2c159c:	4c 8d 34 c5 00 00 00 	lea    0x0(,%rax,8),%r14
+  2c15a3:	00 
+  2c15a4:	4c 89 f7             	mov    %r14,%rdi
+  2c15a7:	e8 c7 fc ff ff       	callq  2c1273 <malloc>
+  2c15ac:	49 89 c7             	mov    %rax,%r15
         void **ptr_array = (void **) malloc (sizeof(void *) * init_alloc_list_length);
-  2c15b9:	4c 89 f7             	mov    %r14,%rdi
-  2c15bc:	e8 b2 fc ff ff       	callq  2c1273 <malloc>
-  2c15c1:	49 89 c6             	mov    %rax,%r14
+  2c15af:	4c 89 f7             	mov    %r14,%rdi
+  2c15b2:	e8 bc fc ff ff       	callq  2c1273 <malloc>
+  2c15b7:	49 89 c6             	mov    %rax,%r14
         if (size_array == NULL || ptr_array == NULL) { free(size_array); free(ptr_array); return -1; }
-  2c15c4:	4d 85 ff             	test   %r15,%r15
-  2c15c7:	74 68                	je     2c1631 <heap_info+0x132>
-  2c15c9:	48 85 c0             	test   %rax,%rax
-  2c15cc:	74 63                	je     2c1631 <heap_info+0x132>
+  2c15ba:	4d 85 ff             	test   %r15,%r15
+  2c15bd:	74 68                	je     2c1627 <heap_info+0x132>
+  2c15bf:	48 85 c0             	test   %rax,%rax
+  2c15c2:	74 63                	je     2c1627 <heap_info+0x132>
         alloc_header *curr = alloc_list_head;
-  2c15ce:	48 8b 15 43 0a 00 00 	mov    0xa43(%rip),%rdx        # 2c2018 <alloc_list_head>
+  2c15c4:	48 8b 15 4d 0a 00 00 	mov    0xa4d(%rip),%rdx        # 2c2018 <alloc_list_head>
         for (int i = 0; i < init_alloc_list_length; i++, curr = curr->next) {
-  2c15d5:	8b 45 cc             	mov    -0x34(%rbp),%eax
-  2c15d8:	85 c0                	test   %eax,%eax
-  2c15da:	7e 24                	jle    2c1600 <heap_info+0x101>
-  2c15dc:	89 c6                	mov    %eax,%esi
-  2c15de:	b8 00 00 00 00       	mov    $0x0,%eax
+  2c15cb:	8b 45 cc             	mov    -0x34(%rbp),%eax
+  2c15ce:	85 c0                	test   %eax,%eax
+  2c15d0:	7e 24                	jle    2c15f6 <heap_info+0x101>
+  2c15d2:	89 c6                	mov    %eax,%esi
+  2c15d4:	b8 00 00 00 00       	mov    $0x0,%eax
             size_array[i] = (long) curr->sz;
-  2c15e3:	48 8b 4a 10          	mov    0x10(%rdx),%rcx
-  2c15e7:	49 89 0c c7          	mov    %rcx,(%r15,%rax,8)
+  2c15d9:	48 8b 4a 10          	mov    0x10(%rdx),%rcx
+  2c15dd:	49 89 0c c7          	mov    %rcx,(%r15,%rax,8)
             ptr_array[i] = (void *) ((uintptr_t) curr + ALLOC_HEADER_SIZE);
-  2c15eb:	48 8d 4a 18          	lea    0x18(%rdx),%rcx
-  2c15ef:	49 89 0c c6          	mov    %rcx,(%r14,%rax,8)
+  2c15e1:	48 8d 4a 18          	lea    0x18(%rdx),%rcx
+  2c15e5:	49 89 0c c6          	mov    %rcx,(%r14,%rax,8)
         for (int i = 0; i < init_alloc_list_length; i++, curr = curr->next) {
-  2c15f3:	48 8b 52 08          	mov    0x8(%rdx),%rdx
-  2c15f7:	48 83 c0 01          	add    $0x1,%rax
-  2c15fb:	48 39 c6             	cmp    %rax,%rsi
-  2c15fe:	75 e3                	jne    2c15e3 <heap_info+0xe4>
+  2c15e9:	48 8b 52 08          	mov    0x8(%rdx),%rdx
+  2c15ed:	48 83 c0 01          	add    $0x1,%rax
+  2c15f1:	48 39 c6             	cmp    %rax,%rsi
+  2c15f4:	75 e3                	jne    2c15d9 <heap_info+0xe4>
         __quicksort(size_array, init_alloc_list_length, sizeof(size_array[0]), &cmp_simple_descending);
-  2c1600:	b9 97 0b 2c 00       	mov    $0x2c0b97,%ecx
-  2c1605:	ba 08 00 00 00       	mov    $0x8,%edx
-  2c160a:	48 8b 75 c0          	mov    -0x40(%rbp),%rsi
-  2c160e:	4c 89 ff             	mov    %r15,%rdi
-  2c1611:	e8 95 f5 ff ff       	callq  2c0bab <__quicksort>
+  2c15f6:	b9 97 0b 2c 00       	mov    $0x2c0b97,%ecx
+  2c15fb:	ba 08 00 00 00       	mov    $0x8,%edx
+  2c1600:	48 8b 75 c0          	mov    -0x40(%rbp),%rsi
+  2c1604:	4c 89 ff             	mov    %r15,%rdi
+  2c1607:	e8 9f f5 ff ff       	callq  2c0bab <__quicksort>
         __quicksort(ptr_array, init_alloc_list_length, sizeof(size_array[0]), &cmp_ptrs_by_size_descending);
-  2c1616:	b9 9d 0b 2c 00       	mov    $0x2c0b9d,%ecx
-  2c161b:	ba 08 00 00 00       	mov    $0x8,%edx
-  2c1620:	48 8b 75 c0          	mov    -0x40(%rbp),%rsi
-  2c1624:	4c 89 f7             	mov    %r14,%rdi
-  2c1627:	e8 7f f5 ff ff       	callq  2c0bab <__quicksort>
+  2c160c:	b9 9d 0b 2c 00       	mov    $0x2c0b9d,%ecx
+  2c1611:	ba 08 00 00 00       	mov    $0x8,%edx
+  2c1616:	48 8b 75 c0          	mov    -0x40(%rbp),%rsi
+  2c161a:	4c 89 f7             	mov    %r14,%rdi
+  2c161d:	e8 89 f5 ff ff       	callq  2c0bab <__quicksort>
         info->ptr_array = ptr_array;
-  2c162c:	e9 35 ff ff ff       	jmpq   2c1566 <heap_info+0x67>
+  2c1622:	e9 35 ff ff ff       	jmpq   2c155c <heap_info+0x67>
         if (size_array == NULL || ptr_array == NULL) { free(size_array); free(ptr_array); return -1; }
-  2c1631:	4c 89 ff             	mov    %r15,%rdi
-  2c1634:	e8 2e fd ff ff       	callq  2c1367 <free>
-  2c1639:	4c 89 f7             	mov    %r14,%rdi
-  2c163c:	e8 26 fd ff ff       	callq  2c1367 <free>
-  2c1641:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
-  2c1646:	e9 37 ff ff ff       	jmpq   2c1582 <heap_info+0x83>
+  2c1627:	4c 89 ff             	mov    %r15,%rdi
+  2c162a:	e8 2e fd ff ff       	callq  2c135d <free>
+  2c162f:	4c 89 f7             	mov    %r14,%rdi
+  2c1632:	e8 26 fd ff ff       	callq  2c135d <free>
+  2c1637:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  2c163c:	e9 37 ff ff ff       	jmpq   2c1578 <heap_info+0x83>
 
-00000000002c164b <app_printf>:
+00000000002c1641 <app_printf>:
 #include "process.h"
 
 // app_printf
 //     A version of console_printf that picks a sensible color by process ID.
 
 void app_printf(int colorid, const char* format, ...) {
-  2c164b:	55                   	push   %rbp
-  2c164c:	48 89 e5             	mov    %rsp,%rbp
-  2c164f:	48 83 ec 50          	sub    $0x50,%rsp
-  2c1653:	49 89 f2             	mov    %rsi,%r10
-  2c1656:	48 89 55 e0          	mov    %rdx,-0x20(%rbp)
-  2c165a:	48 89 4d e8          	mov    %rcx,-0x18(%rbp)
-  2c165e:	4c 89 45 f0          	mov    %r8,-0x10(%rbp)
-  2c1662:	4c 89 4d f8          	mov    %r9,-0x8(%rbp)
+  2c1641:	55                   	push   %rbp
+  2c1642:	48 89 e5             	mov    %rsp,%rbp
+  2c1645:	48 83 ec 50          	sub    $0x50,%rsp
+  2c1649:	49 89 f2             	mov    %rsi,%r10
+  2c164c:	48 89 55 e0          	mov    %rdx,-0x20(%rbp)
+  2c1650:	48 89 4d e8          	mov    %rcx,-0x18(%rbp)
+  2c1654:	4c 89 45 f0          	mov    %r8,-0x10(%rbp)
+  2c1658:	4c 89 4d f8          	mov    %r9,-0x8(%rbp)
     int color;
     if (colorid < 0) {
         color = 0x0700;
-  2c1666:	be 00 07 00 00       	mov    $0x700,%esi
+  2c165c:	be 00 07 00 00       	mov    $0x700,%esi
     if (colorid < 0) {
-  2c166b:	85 ff                	test   %edi,%edi
-  2c166d:	78 2e                	js     2c169d <app_printf+0x52>
+  2c1661:	85 ff                	test   %edi,%edi
+  2c1663:	78 2e                	js     2c1693 <app_printf+0x52>
     } else {
         static const uint8_t col[] = { 0x0E, 0x0F, 0x0C, 0x0A, 0x09 };
         color = col[colorid % sizeof(col)] << 8;
-  2c166f:	48 63 ff             	movslq %edi,%rdi
-  2c1672:	48 ba cd cc cc cc cc 	movabs $0xcccccccccccccccd,%rdx
-  2c1679:	cc cc cc 
-  2c167c:	48 89 f8             	mov    %rdi,%rax
-  2c167f:	48 f7 e2             	mul    %rdx
-  2c1682:	48 89 d0             	mov    %rdx,%rax
-  2c1685:	48 c1 e8 02          	shr    $0x2,%rax
-  2c1689:	48 83 e2 fc          	and    $0xfffffffffffffffc,%rdx
-  2c168d:	48 01 c2             	add    %rax,%rdx
-  2c1690:	48 29 d7             	sub    %rdx,%rdi
-  2c1693:	0f b6 b7 bd 1a 2c 00 	movzbl 0x2c1abd(%rdi),%esi
-  2c169a:	c1 e6 08             	shl    $0x8,%esi
+  2c1665:	48 63 ff             	movslq %edi,%rdi
+  2c1668:	48 ba cd cc cc cc cc 	movabs $0xcccccccccccccccd,%rdx
+  2c166f:	cc cc cc 
+  2c1672:	48 89 f8             	mov    %rdi,%rax
+  2c1675:	48 f7 e2             	mul    %rdx
+  2c1678:	48 89 d0             	mov    %rdx,%rax
+  2c167b:	48 c1 e8 02          	shr    $0x2,%rax
+  2c167f:	48 83 e2 fc          	and    $0xfffffffffffffffc,%rdx
+  2c1683:	48 01 c2             	add    %rax,%rdx
+  2c1686:	48 29 d7             	sub    %rdx,%rdi
+  2c1689:	0f b6 b7 ad 1a 2c 00 	movzbl 0x2c1aad(%rdi),%esi
+  2c1690:	c1 e6 08             	shl    $0x8,%esi
     }
 
     va_list val;
     va_start(val, format);
-  2c169d:	c7 45 b8 10 00 00 00 	movl   $0x10,-0x48(%rbp)
-  2c16a4:	48 8d 45 10          	lea    0x10(%rbp),%rax
-  2c16a8:	48 89 45 c0          	mov    %rax,-0x40(%rbp)
-  2c16ac:	48 8d 45 d0          	lea    -0x30(%rbp),%rax
-  2c16b0:	48 89 45 c8          	mov    %rax,-0x38(%rbp)
+  2c1693:	c7 45 b8 10 00 00 00 	movl   $0x10,-0x48(%rbp)
+  2c169a:	48 8d 45 10          	lea    0x10(%rbp),%rax
+  2c169e:	48 89 45 c0          	mov    %rax,-0x40(%rbp)
+  2c16a2:	48 8d 45 d0          	lea    -0x30(%rbp),%rax
+  2c16a6:	48 89 45 c8          	mov    %rax,-0x38(%rbp)
     cursorpos = console_vprintf(cursorpos, color, format, val);
-  2c16b4:	48 8d 4d b8          	lea    -0x48(%rbp),%rcx
-  2c16b8:	4c 89 d2             	mov    %r10,%rdx
-  2c16bb:	8b 3d 3b 79 df ff    	mov    -0x2086c5(%rip),%edi        # b8ffc <cursorpos>
-  2c16c1:	e8 af f3 ff ff       	callq  2c0a75 <console_vprintf>
+  2c16aa:	48 8d 4d b8          	lea    -0x48(%rbp),%rcx
+  2c16ae:	4c 89 d2             	mov    %r10,%rdx
+  2c16b1:	8b 3d 45 79 df ff    	mov    -0x2086bb(%rip),%edi        # b8ffc <cursorpos>
+  2c16b7:	e8 b9 f3 ff ff       	callq  2c0a75 <console_vprintf>
     va_end(val);
 
     if (CROW(cursorpos) >= 23) {
         cursorpos = CPOS(0, 0);
-  2c16c6:	3d 30 07 00 00       	cmp    $0x730,%eax
-  2c16cb:	ba 00 00 00 00       	mov    $0x0,%edx
-  2c16d0:	0f 4d c2             	cmovge %edx,%eax
-  2c16d3:	89 05 23 79 df ff    	mov    %eax,-0x2086dd(%rip)        # b8ffc <cursorpos>
+  2c16bc:	3d 30 07 00 00       	cmp    $0x730,%eax
+  2c16c1:	ba 00 00 00 00       	mov    $0x0,%edx
+  2c16c6:	0f 4d c2             	cmovge %edx,%eax
+  2c16c9:	89 05 2d 79 df ff    	mov    %eax,-0x2086d3(%rip)        # b8ffc <cursorpos>
     }
 }
-  2c16d9:	c9                   	leaveq 
-  2c16da:	c3                   	retq   
+  2c16cf:	c9                   	leaveq 
+  2c16d0:	c3                   	retq   
 
-00000000002c16db <kernel_panic>:
+00000000002c16d1 <kernel_panic>:
 
 
 // kernel_panic, assert_fail
 //     Call the INT_SYS_PANIC system call so the kernel loops until Control-C.
 
 void kernel_panic(const char* format, ...) {
-  2c16db:	55                   	push   %rbp
-  2c16dc:	48 89 e5             	mov    %rsp,%rbp
-  2c16df:	53                   	push   %rbx
-  2c16e0:	48 81 ec f8 00 00 00 	sub    $0xf8,%rsp
-  2c16e7:	48 89 fb             	mov    %rdi,%rbx
-  2c16ea:	48 89 75 c8          	mov    %rsi,-0x38(%rbp)
-  2c16ee:	48 89 55 d0          	mov    %rdx,-0x30(%rbp)
-  2c16f2:	48 89 4d d8          	mov    %rcx,-0x28(%rbp)
-  2c16f6:	4c 89 45 e0          	mov    %r8,-0x20(%rbp)
-  2c16fa:	4c 89 4d e8          	mov    %r9,-0x18(%rbp)
+  2c16d1:	55                   	push   %rbp
+  2c16d2:	48 89 e5             	mov    %rsp,%rbp
+  2c16d5:	53                   	push   %rbx
+  2c16d6:	48 81 ec f8 00 00 00 	sub    $0xf8,%rsp
+  2c16dd:	48 89 fb             	mov    %rdi,%rbx
+  2c16e0:	48 89 75 c8          	mov    %rsi,-0x38(%rbp)
+  2c16e4:	48 89 55 d0          	mov    %rdx,-0x30(%rbp)
+  2c16e8:	48 89 4d d8          	mov    %rcx,-0x28(%rbp)
+  2c16ec:	4c 89 45 e0          	mov    %r8,-0x20(%rbp)
+  2c16f0:	4c 89 4d e8          	mov    %r9,-0x18(%rbp)
     va_list val;
     va_start(val, format);
-  2c16fe:	c7 45 a8 08 00 00 00 	movl   $0x8,-0x58(%rbp)
-  2c1705:	48 8d 45 10          	lea    0x10(%rbp),%rax
-  2c1709:	48 89 45 b0          	mov    %rax,-0x50(%rbp)
-  2c170d:	48 8d 45 c0          	lea    -0x40(%rbp),%rax
-  2c1711:	48 89 45 b8          	mov    %rax,-0x48(%rbp)
+  2c16f4:	c7 45 a8 08 00 00 00 	movl   $0x8,-0x58(%rbp)
+  2c16fb:	48 8d 45 10          	lea    0x10(%rbp),%rax
+  2c16ff:	48 89 45 b0          	mov    %rax,-0x50(%rbp)
+  2c1703:	48 8d 45 c0          	lea    -0x40(%rbp),%rax
+  2c1707:	48 89 45 b8          	mov    %rax,-0x48(%rbp)
     char buf[160];
     memcpy(buf, "PANIC: ", 7);
-  2c1715:	ba 07 00 00 00       	mov    $0x7,%edx
-  2c171a:	be 87 1a 2c 00       	mov    $0x2c1a87,%esi
-  2c171f:	48 8d bd 08 ff ff ff 	lea    -0xf8(%rbp),%rdi
-  2c1726:	e8 f1 ea ff ff       	callq  2c021c <memcpy>
+  2c170b:	ba 07 00 00 00       	mov    $0x7,%edx
+  2c1710:	be 77 1a 2c 00       	mov    $0x2c1a77,%esi
+  2c1715:	48 8d bd 08 ff ff ff 	lea    -0xf8(%rbp),%rdi
+  2c171c:	e8 fb ea ff ff       	callq  2c021c <memcpy>
     int len = vsnprintf(&buf[7], sizeof(buf) - 7, format, val) + 7;
-  2c172b:	48 8d 4d a8          	lea    -0x58(%rbp),%rcx
-  2c172f:	48 89 da             	mov    %rbx,%rdx
-  2c1732:	be 99 00 00 00       	mov    $0x99,%esi
-  2c1737:	48 8d bd 0f ff ff ff 	lea    -0xf1(%rbp),%rdi
-  2c173e:	e8 ad f3 ff ff       	callq  2c0af0 <vsnprintf>
-  2c1743:	8d 50 07             	lea    0x7(%rax),%edx
+  2c1721:	48 8d 4d a8          	lea    -0x58(%rbp),%rcx
+  2c1725:	48 89 da             	mov    %rbx,%rdx
+  2c1728:	be 99 00 00 00       	mov    $0x99,%esi
+  2c172d:	48 8d bd 0f ff ff ff 	lea    -0xf1(%rbp),%rdi
+  2c1734:	e8 b7 f3 ff ff       	callq  2c0af0 <vsnprintf>
+  2c1739:	8d 50 07             	lea    0x7(%rax),%edx
     va_end(val);
     if (len > 0 && buf[len - 1] != '\n') {
-  2c1746:	85 d2                	test   %edx,%edx
-  2c1748:	7e 0f                	jle    2c1759 <kernel_panic+0x7e>
-  2c174a:	83 c0 06             	add    $0x6,%eax
-  2c174d:	48 98                	cltq   
-  2c174f:	80 bc 05 08 ff ff ff 	cmpb   $0xa,-0xf8(%rbp,%rax,1)
-  2c1756:	0a 
-  2c1757:	75 2a                	jne    2c1783 <kernel_panic+0xa8>
+  2c173c:	85 d2                	test   %edx,%edx
+  2c173e:	7e 0f                	jle    2c174f <kernel_panic+0x7e>
+  2c1740:	83 c0 06             	add    $0x6,%eax
+  2c1743:	48 98                	cltq   
+  2c1745:	80 bc 05 08 ff ff ff 	cmpb   $0xa,-0xf8(%rbp,%rax,1)
+  2c174c:	0a 
+  2c174d:	75 2a                	jne    2c1779 <kernel_panic+0xa8>
         strcpy(buf + len - (len == (int) sizeof(buf) - 1), "\n");
     }
     (void) console_printf(CPOS(23, 0), 0xC000, "%s", buf);
-  2c1759:	48 8d 9d 08 ff ff ff 	lea    -0xf8(%rbp),%rbx
-  2c1760:	48 89 d9             	mov    %rbx,%rcx
-  2c1763:	ba 8f 1a 2c 00       	mov    $0x2c1a8f,%edx
-  2c1768:	be 00 c0 00 00       	mov    $0xc000,%esi
-  2c176d:	bf 30 07 00 00       	mov    $0x730,%edi
-  2c1772:	b8 00 00 00 00       	mov    $0x0,%eax
-  2c1777:	e8 3e f3 ff ff       	callq  2c0aba <console_printf>
+  2c174f:	48 8d 9d 08 ff ff ff 	lea    -0xf8(%rbp),%rbx
+  2c1756:	48 89 d9             	mov    %rbx,%rcx
+  2c1759:	ba 7f 1a 2c 00       	mov    $0x2c1a7f,%edx
+  2c175e:	be 00 c0 00 00       	mov    $0xc000,%esi
+  2c1763:	bf 30 07 00 00       	mov    $0x730,%edi
+  2c1768:	b8 00 00 00 00       	mov    $0x0,%eax
+  2c176d:	e8 48 f3 ff ff       	callq  2c0aba <console_printf>
     asm volatile ("int %0" : /* no result */
-  2c177c:	48 89 df             	mov    %rbx,%rdi
-  2c177f:	cd 30                	int    $0x30
+  2c1772:	48 89 df             	mov    %rbx,%rdi
+  2c1775:	cd 30                	int    $0x30
  loop: goto loop;
-  2c1781:	eb fe                	jmp    2c1781 <kernel_panic+0xa6>
+  2c1777:	eb fe                	jmp    2c1777 <kernel_panic+0xa6>
         strcpy(buf + len - (len == (int) sizeof(buf) - 1), "\n");
-  2c1783:	48 63 c2             	movslq %edx,%rax
-  2c1786:	81 fa 9f 00 00 00    	cmp    $0x9f,%edx
-  2c178c:	0f 94 c2             	sete   %dl
-  2c178f:	0f b6 d2             	movzbl %dl,%edx
-  2c1792:	48 29 d0             	sub    %rdx,%rax
-  2c1795:	48 8d bc 05 08 ff ff 	lea    -0xf8(%rbp,%rax,1),%rdi
-  2c179c:	ff 
-  2c179d:	be 1c 18 2c 00       	mov    $0x2c181c,%esi
-  2c17a2:	e8 37 eb ff ff       	callq  2c02de <strcpy>
-  2c17a7:	eb b0                	jmp    2c1759 <kernel_panic+0x7e>
+  2c1779:	48 63 c2             	movslq %edx,%rax
+  2c177c:	81 fa 9f 00 00 00    	cmp    $0x9f,%edx
+  2c1782:	0f 94 c2             	sete   %dl
+  2c1785:	0f b6 d2             	movzbl %dl,%edx
+  2c1788:	48 29 d0             	sub    %rdx,%rax
+  2c178b:	48 8d bc 05 08 ff ff 	lea    -0xf8(%rbp,%rax,1),%rdi
+  2c1792:	ff 
+  2c1793:	be 0c 18 2c 00       	mov    $0x2c180c,%esi
+  2c1798:	e8 41 eb ff ff       	callq  2c02de <strcpy>
+  2c179d:	eb b0                	jmp    2c174f <kernel_panic+0x7e>
 
-00000000002c17a9 <assert_fail>:
+00000000002c179f <assert_fail>:
     panic(buf);
  spinloop: goto spinloop;       // should never get here
 }
 
 void assert_fail(const char* file, int line, const char* msg) {
-  2c17a9:	55                   	push   %rbp
-  2c17aa:	48 89 e5             	mov    %rsp,%rbp
-  2c17ad:	48 89 f9             	mov    %rdi,%rcx
-  2c17b0:	41 89 f0             	mov    %esi,%r8d
-  2c17b3:	49 89 d1             	mov    %rdx,%r9
+  2c179f:	55                   	push   %rbp
+  2c17a0:	48 89 e5             	mov    %rsp,%rbp
+  2c17a3:	48 89 f9             	mov    %rdi,%rcx
+  2c17a6:	41 89 f0             	mov    %esi,%r8d
+  2c17a9:	49 89 d1             	mov    %rdx,%r9
     (void) console_printf(CPOS(23, 0), 0xC000,
-  2c17b6:	ba 98 1a 2c 00       	mov    $0x2c1a98,%edx
-  2c17bb:	be 00 c0 00 00       	mov    $0xc000,%esi
-  2c17c0:	bf 30 07 00 00       	mov    $0x730,%edi
-  2c17c5:	b8 00 00 00 00       	mov    $0x0,%eax
-  2c17ca:	e8 eb f2 ff ff       	callq  2c0aba <console_printf>
+  2c17ac:	ba 88 1a 2c 00       	mov    $0x2c1a88,%edx
+  2c17b1:	be 00 c0 00 00       	mov    $0xc000,%esi
+  2c17b6:	bf 30 07 00 00       	mov    $0x730,%edi
+  2c17bb:	b8 00 00 00 00       	mov    $0x0,%eax
+  2c17c0:	e8 f5 f2 ff ff       	callq  2c0aba <console_printf>
     asm volatile ("int %0" : /* no result */
-  2c17cf:	bf 00 00 00 00       	mov    $0x0,%edi
-  2c17d4:	cd 30                	int    $0x30
+  2c17c5:	bf 00 00 00 00       	mov    $0x0,%edi
+  2c17ca:	cd 30                	int    $0x30
  loop: goto loop;
-  2c17d6:	eb fe                	jmp    2c17d6 <assert_fail+0x2d>
+  2c17cc:	eb fe                	jmp    2c17cc <assert_fail+0x2d>

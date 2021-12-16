@@ -10,18 +10,6 @@
 #include "process.h"
 #endif
 
-typedef struct alloc_header{
-    struct alloc_header *prev;
-    struct alloc_header *next;
-    size_t sz;
-} alloc_header;
-
-typedef struct free_list_node {
-    struct free_list_node *prev;
-    struct free_list_node *next;
-    size_t sz;
-} free_list_node;
-
 // malloc(sz):
 // allocates sz bytes of uninitialized memory and returns a pointer to the allocated memory
 // if sz == 0, then malloc() either returns NULL or a unique pointer value that can be

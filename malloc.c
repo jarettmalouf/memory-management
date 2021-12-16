@@ -4,6 +4,19 @@
 #define ALLOC_HEADER_SIZE sizeof(struct alloc_header)
 #define FREE_LIST_NODE_SIZE sizeof(struct free_list_node)
 
+typedef struct alloc_header{
+    struct alloc_header *prev;
+    struct alloc_header *next;
+    size_t sz;
+} alloc_header;
+
+typedef struct free_list_node {
+    struct free_list_node *prev;
+    struct free_list_node *next;
+    size_t sz;
+} free_list_node;
+
+
 // __quicksort
 #define SWAP(a, b, size)                                                      \
   do                                                                              \
@@ -195,8 +208,6 @@ alloc_header *alloc_list_head = NULL;
 alloc_header *alloc_list_tail = NULL;
 int alloc_list_length = 0;
 
-int break_made = 0;
-
 void append_free_list_node(free_list_node *node) {
     node->next = NULL;
     node->prev = NULL;
@@ -272,23 +283,19 @@ void contract_heap(size_t sz) {
 // returns address of the block (alloc_header) if allocated properly
 // NULL if there was no space
 uintptr_t allocate_to_free_block(uint64_t sz) {
-    // find a free block
     free_list_node *free_block = get_free_block(sz);
     if (free_block == NULL) return (uintptr_t) -1;
 
-    // remove that free block
     uintptr_t block_addr = (uintptr_t) free_block;
     size_t block_size = free_block->sz;
     remove_free_list_node(free_block);
 
-    // replace it with an alloc_header
     struct alloc_header *header = (struct alloc_header *) block_addr;
     size_t payload_size = ROUNDUP(sz, ALIGNMENT);
     size_t min_payload_size = FREE_LIST_NODE_SIZE - ALLOC_HEADER_SIZE;
     if (payload_size < min_payload_size) payload_size = min_payload_size;
     header->sz = payload_size;
 
-    // leftover stuff
     size_t data_size = ALLOC_HEADER_SIZE + payload_size;
     size_t leftover = block_size - data_size;
 
@@ -313,7 +320,6 @@ void *malloc(uint64_t sz) {
     uintptr_t block_addr = allocate_to_free_block(sz);
     while (block_addr == (uintptr_t) -1) {
         if (extend_heap(sz) == NULL) return NULL;
-        break_made = 1;
         block_addr = allocate_to_free_block(sz);
     }
 
@@ -364,6 +370,7 @@ void *realloc(void * ptr, uint64_t sz) {
 
     void *malloc_addr = malloc(sz);
     if (malloc_addr == NULL) return NULL;
+
     struct alloc_header *header = (struct alloc_header *) ((uintptr_t) malloc_addr - ALLOC_HEADER_SIZE);
     memcpy(malloc_addr, ptr, header->sz);
 
@@ -423,7 +430,6 @@ void defrag() {
 int heap_info(heap_info_struct * info) {
     int init_alloc_list_length = alloc_list_length;
     
-    // free space + largest free chunk
     int largest_free_chunk = 0;
     int free_space = 0;
     free_list_node *curr_ = free_list_head;
@@ -433,7 +439,6 @@ int heap_info(heap_info_struct * info) {
         free_space += sz;
     }
 
-    // size + ptr arrays
     if (init_alloc_list_length == 0) {
         info->size_array = NULL;
         info->ptr_array = NULL;
